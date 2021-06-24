@@ -11,7 +11,7 @@ import {
   Avatar,
 } from "react-native";
 import { DefaultTheme, Provider as PaperProvider } from "react-native-paper";
-import { Icon } from "react-native-elements";
+import { Icon, ListItem } from "react-native-elements";
 import LoadSpinner from "../components/SpinnerComponent";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
@@ -21,6 +21,7 @@ import { closeApp } from "../utils/Utility";
 import { getResources } from "../components/ApiClient";
 import { API_DOCTOR_DISPENSARY_URL, SERVER_HOST } from "../commons/constants";
 import { storeData } from "../service/AppLocalCache";
+import UserProfile from "../components/UserProfile";
 
 const Item = ({ title }) => (
   <View style={styles.item}>
@@ -34,6 +35,9 @@ function ChannelScreen({ route, navigation }) {
   const dispensary = route.params.dispensary;
   const [isLoading, setIsLoading] = useState(true);
   const [availabilityGrid, setAvailabilityGrid] = useState([]);
+  const [dispensaryList, setDispensaryList] = useState([]);
+  const [selectedDoctor, setSelectedDoctor] = useState([]);
+  const [onlineDisplayDays, setOnlineDisplayDays] = useState(1);
 
   const theme = {
     ...DefaultTheme,
@@ -117,6 +121,8 @@ function ChannelScreen({ route, navigation }) {
       .then((resources) => {
         console.log("ChannelScreen => GET :" + JSON.stringify(resources));
         let map = new Map();
+        let tmpDispensary = [];
+        setSelectedDoctor(resources[0].doctor);
         resources.forEach((resource) => {
           console.log(
             "dispensary :" +
@@ -124,15 +130,11 @@ function ChannelScreen({ route, navigation }) {
               " doctor :" +
               map.get(resource.doctor.doctorId)
           );
-          map.set(
-            key(
-              resource.dispensary.dispensaryId,
-              resource.dispensary.name,
-              resource.dispensary.address
-            ),
-            margeResourceItems(map, resource)
-          );
+
+          tmpDispensary.push(resource.dispensary);
+          setOnlineDisplayDays(resource.onlineDisplayDays);
         });
+        setDispensaryList(tmpDispensary);
         setAvailabilityGrid(populateGrid(map));
         setIsLoading(false);
       })
@@ -152,65 +154,45 @@ function ChannelScreen({ route, navigation }) {
           {isLoading ? (
             <LoadSpinner loading={isLoading} loadingText="Please wait .." />
           ) : (
-            <View style={styles.channel_list}>
-              <SectionList
-                ItemSeparatorComponent={ListItemSeparator}
-                sections={availabilityGrid}
-                keyExtractor={(item, index) => item + index}
-                renderItem={({ item }) => (
-                  <View>
-                    <View>
-                      <Text style={styles.item}>{item.doctor.name}</Text>
-                      <Text style={styles.grid_doc_title_text}>
-                        {item.doctor.speciality}
-                      </Text>
-                    </View>
-                    <View>
-                      <TouchableOpacity
-                        style={styles.channel}
-                        onPress={() => {
-                          let selectedModel = {
-                            doctor: {
-                              doctorId: item.doctor.doctorId,
-                              doctorName: item.doctor.name,
-                              photo: item.doctor.image,
-                              speciality: item.doctor.speciality,
-                            },
-                            dispensary: {
-                              dispensaryId: item.dispensary.dispensaryId,
-                              dispensaryName: item.dispensary.name,
-                              address: item.dispensary,
-                            },
-                            onlineDisplayDays: item.onlineDisplayDays,
-                          };
-                          storeData("doc_dis_cache", selectedModel);
-                          navigation.navigate("SessionScreen");
-                        }}
-                      >
-                        <View style={{ flexDirection: "row" }}>
-                          <Icon
-                            name="stethoscope"
-                            type="font-awesome"
-                            color="white"
-                          />
-                          <Text style={styles.channel_text}>Channels</Text>
-                        </View>
-                      </TouchableOpacity>
-                    </View>
-                  </View>
-                )}
-                renderSectionHeader={({ section }) => (
-                  <View>
-                    <Text style={styles.sectionHeader}>
-                      {section.title.name}
-                    </Text>
-                    <Text style={styles.sectionSubHeader}>
-                      {section.title.address}
-                    </Text>
-                  </View>
-                )}
-              />
-              {/* </ScrollView> */}
+            <View>
+              <>
+                <UserProfile user={selectedDoctor} />
+              </>
+              <View style={styles.channel_list}>
+                {dispensaryList.map((dispensary, i) => (
+                  <ListItem
+                    key={i}
+                    bottomDivider
+                    onPress={() => {
+                      let selectedModel = {
+                        doctor: {
+                          doctorId: selectedDoctor.doctorId,
+                          doctorName: selectedDoctor.name,
+                          photo: selectedDoctor.image,
+                          speciality: selectedDoctor.speciality,
+                        },
+                        dispensary: {
+                          dispensaryId: dispensary.dispensaryId,
+                          dispensaryName: dispensary.name,
+                          address: dispensary.address,
+                        },
+                        onlineDisplayDays: onlineDisplayDays,
+                      };
+                      storeData("doc_dis_cache", selectedModel);
+                      navigation.navigate("SessionScreen");
+                    }}
+                  >
+                    <ListItem.Content>
+                      <ListItem.Title>{dispensary.name}</ListItem.Title>
+                      <ListItem.Subtitle>
+                        {dispensary.address}
+                      </ListItem.Subtitle>
+                    </ListItem.Content>
+                  </ListItem>
+                ))}
+
+                {/* </ScrollView> */}
+              </View>
             </View>
           )}
         </View>
@@ -336,3 +318,4 @@ const styles = StyleSheet.create({
 });
 
 export default ChannelScreen;
+
