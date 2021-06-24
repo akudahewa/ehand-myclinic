@@ -1,0 +1,28 @@
+{
+  "expo": {
+    "name": "MyClinic",
+    "slug": "MyClinic",
+    "platforms": ["ios", "android", "web"],
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./app/assets/icon.png",
+    "splash": {
+      "image": "./app/assets/myclinic_logo.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "org.reactjs.native.example.MyClinic",
+      "buildNumber": "1.0.0"
+    },
+    "android": {
+      "package": "com.millionaire_club.myclinic",
+      "versionCode": 1
+    }
+  }
+}
