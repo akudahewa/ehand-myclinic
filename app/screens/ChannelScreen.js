@@ -132,10 +132,6 @@ function ChannelScreen({ route, navigation }) {
           );
 
           tmpDispensary.push(resource.dispensary);
-          console.log(
-            "OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO " +
-              resource.onlineDisplayDays
-          );
           setOnlineDisplayDays(resource.onlineDisplayDays);
         });
         setDispensaryList(tmpDispensary);
