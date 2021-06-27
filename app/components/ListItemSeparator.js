@@ -9,7 +9,7 @@ const ListItemSeparator = () => {
         height: 1,
         marginLeft: 10,
         marginRight: 10,
-        backgroundColor: "#C8C8C8",
+        backgroundColor: "#e4e2e2",
       }}
     />
   );

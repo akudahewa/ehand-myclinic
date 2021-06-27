@@ -61,7 +61,7 @@ function DistrictScreen({ navigation }) {
         showExceptionAlert(navigation);
         return true;
       })
-      .finally(() => {});
+      .finally(() => { });
   }, []);
 
   useEffect(() => {
@@ -91,7 +91,7 @@ function DistrictScreen({ navigation }) {
         ) : (
           <View style={GlobalStyle.body_container}>
             <Text style={GlobalStyle.title}>{SELECT_DISTRICT}</Text>
-            <ScrollView>
+            <ScrollView showsVerticalScrollIndicator={false}>
               <View style={GlobalStyle.content_list}>
                 <FlatList
                   ItemSeparatorComponent={ListItemSeparator}
@@ -107,6 +107,11 @@ function DistrictScreen({ navigation }) {
                           }}
                           style={[GlobalStyle.item]}
                         >
+                          <Icon
+                            name='location'
+                            type='evilicon'
+                            color='#4573a2'
+                            size={20} />
                           <Text style={GlobalStyle.item_text}>{item.name}</Text>
                         </TouchableOpacity>
                       )}

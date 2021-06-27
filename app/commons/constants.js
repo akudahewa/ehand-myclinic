@@ -6,7 +6,7 @@ export const API_TNX = "transaction";
 
 export const APP_HEADER_TEXT = "My Clinic";
 export const LOADING_TEXT = "Please wait ...";
-export const SELECT_DISTRICT = "Select your District";
+export const SELECT_DISTRICT = "Select your district";
 
 export const SCREEN_CITY = "CityScreen";
 export const SCREEN_DOC_DISPENSARY = "DoctorDispensaryScreen";

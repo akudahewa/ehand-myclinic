@@ -16,7 +16,7 @@ const styles = (props) =>
       padding: props.padding || 5,
       alignItems: "center",
       justifyContent: "center",
-      backgroundColor: props.backgroundColor || "#e3f6fc",
+      backgroundColor: props.backgroundColor || "#fff",
       paddingBottom: props.paddingBottom || 10,
       paddingTop: props.paddingTop || 10,
       elevation: props.elevation || 5,
@@ -24,7 +24,7 @@ const styles = (props) =>
     titleText: {
       fontSize: props.fontSize || 18,
       fontWeight: props.fontWeight || "bold",
-      color: props.color || "#1d72a3",
+      color: props.color || "#50a584",
     },
     addressText: {
       fontSize: props.fontSize || 10,

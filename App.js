@@ -13,6 +13,7 @@ import BookingConfirmScreen from "./app/screens/BookingConfirmScreen";
 import BookingSuccessScreen from "./app/screens/BookingSuccesScreen";
 import WelcomeScreen from "./app/screens/WelcomeScreen";
 import DoctorDispensaryScreen from "./app/screens/DoctorDispensaryScreen";
+import MyBookings from "./app/screens/MyBookings";
 import { PatientContextProvider } from "./app/provider/PatientProvider";
 import { createAppContainer } from "react-navigation";
 
@@ -39,6 +40,10 @@ function MyStack() {
       <Stack.Screen
         name="BookingSuccessScreen"
         component={BookingSuccessScreen}
+      />
+      <Stack.Screen
+        name="MyBookings"
+        component={MyBookings}
       />
     </Stack.Navigator>
   );
