@@ -40,7 +40,7 @@ const DoctorList = (props) => {
               <Avatar
                 rounded
                 title={
-                  doctor.name.split(" ")[1][0] + doctor.name.split(" ")[2][0]
+                  doctor.name.split(" ")[0][0] + doctor.name.split(" ")[1][0]
                 }
                 size={40}
                 source={{

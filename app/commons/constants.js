@@ -15,4 +15,5 @@ export const SCREEN_CHANNEL = "ChannelScreen";
 export const CACHE_DOC_DIS = "doc_dis_cache";
 
 export const SERVER_HOST = "http://192.168.1.5:8086/health-service";
-// "https://agile-reef-01445.herokuapp.com/health-service";
+// export const SERVER_HOST =
+//   "https://agile-reef-01445.herokuapp.com/health-service";
