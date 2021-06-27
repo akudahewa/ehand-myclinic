@@ -52,6 +52,8 @@ function DoctorDispensaryScreen({ route, navigation }) {
     }
   };
 
+
+
   const pushToDoctor = (tmpArray, resource) => {
     let doctorExsist = tmpArray.filter(
       (doctor) => doctor.doctorId === resource.doctor.doctorId
@@ -97,12 +99,12 @@ function DoctorDispensaryScreen({ route, navigation }) {
         showExceptionAlert(navigation);
         return true;
       })
-      .finally(() => {});
+      .finally(() => { });
   }, []);
 
   return (
     <PaperProvider theme={theme}>
-      <Header name={APP_HEADER_TEXT} />
+      <Header showBackArrow name={APP_HEADER_TEXT} />
       <View style={styles.main_container}>
         {/* {<RenderStatusBar />} */}
         {isLoading ? (
@@ -119,11 +121,13 @@ function DoctorDispensaryScreen({ route, navigation }) {
               renderTabBar={(props) => (
                 <TabBar
                   {...props}
-                  style={{
-                    backgroundColor: "#dcdcdc",
-                    indicatorStyle: { borderBottomColor: "black" },
-                  }}
+                  style={{ backgroundColor: "#e6e6e6" }}
+                  indicatorStyle={{ backgroundColor: '#43b366', position:'absolute', top:0, height:50 }}
+                  //old color - #719ac4
+                  activeColor='#fff'
+                  inactiveColor='#8b8a8a'
                 />
+                
               )}
             />
           </View>
@@ -137,7 +141,7 @@ const styles = StyleSheet.create({
   main_container: {
     flex: 1,
     justifyContent: "center",
-    paddingTop: 5,
+    //paddingTop: 5,
   },
   heading: {
     margin: 10,

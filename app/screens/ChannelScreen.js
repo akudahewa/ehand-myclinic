@@ -11,7 +11,7 @@ import {
   Avatar,
 } from "react-native";
 import { DefaultTheme, Provider as PaperProvider } from "react-native-paper";
-import { Icon, ListItem } from "react-native-elements";
+import { Icon, ListItem, Button } from "react-native-elements";
 import LoadSpinner from "../components/SpinnerComponent";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
@@ -22,6 +22,7 @@ import { getResources } from "../components/ApiClient";
 import { API_DOCTOR_DISPENSARY_URL, SERVER_HOST } from "../commons/constants";
 import { storeData } from "../service/AppLocalCache";
 import UserProfile from "../components/UserProfile";
+import GlobalStyle from "../style/style";
 
 const Item = ({ title }) => (
   <View style={styles.item}>
@@ -126,9 +127,9 @@ function ChannelScreen({ route, navigation }) {
         resources.forEach((resource) => {
           console.log(
             "dispensary :" +
-              map.get(resource.dispensary.dispensaryId) +
-              " doctor :" +
-              map.get(resource.doctor.doctorId)
+            map.get(resource.dispensary.dispensaryId) +
+            " doctor :" +
+            map.get(resource.doctor.doctorId)
           );
 
           tmpDispensary.push(resource.dispensary);
@@ -143,7 +144,7 @@ function ChannelScreen({ route, navigation }) {
         showExceptionAlert(navigation);
         return true;
       })
-      .finally(() => {});
+      .finally(() => { });
   }, []);
 
   return (
@@ -163,30 +164,53 @@ function ChannelScreen({ route, navigation }) {
                   <ListItem
                     key={i}
                     bottomDivider
-                    onPress={() => {
-                      let selectedModel = {
-                        doctor: {
-                          doctorId: selectedDoctor.doctorId,
-                          doctorName: selectedDoctor.name,
-                          photo: selectedDoctor.image,
-                          speciality: selectedDoctor.speciality,
-                        },
-                        dispensary: {
-                          dispensaryId: dispensary.dispensaryId,
-                          dispensaryName: dispensary.name,
-                          address: dispensary.address,
-                        },
-                        onlineDisplayDays: onlineDisplayDays,
-                      };
-                      storeData("doc_dis_cache", selectedModel);
-                      navigation.navigate("SessionScreen");
-                    }}
+                    
                   >
                     <ListItem.Content>
-                      <ListItem.Title>{dispensary.name}</ListItem.Title>
-                      <ListItem.Subtitle>
-                        {dispensary.address}
-                      </ListItem.Subtitle>
+                      <View style={{ display: 'flex', flexDirection: 'row', alignItems:'center', justifyContent:'space-between' }}>
+                        <View style={{ flex: 1, flexWrap:'wrap', flexDirection:'row' }}>
+                          <ListItem.Title style={GlobalStyle.listTitleBold}>{dispensary.name}</ListItem.Title>
+                          <ListItem.Subtitle>
+                            {dispensary.address}
+                          </ListItem.Subtitle>
+                        </View>
+                        <Button
+                          // icon={
+                          //   <Icon
+                          //     name="stethoscope"
+                          //     size={15}
+                          //     color="white"
+                          //     type="font-awesome"
+                          //     style={{ marginRight: 10 }}
+                          //   />
+                          // }
+                          title="Select"
+                          raised
+                          buttonStyle={{backgroundColor:'#43b366', paddingHorizontal:15}}
+                          onPress={() => {
+                            let selectedModel = {
+                              doctor: {
+                                doctorId: selectedDoctor.doctorId,
+                                name: selectedDoctor.name,
+                                photo: selectedDoctor.image,
+                                speciality: selectedDoctor.speciality,
+                              },
+                              dispensary: {
+                                dispensaryId: dispensary.dispensaryId,
+                                dispensaryName: dispensary.name,
+                                address: dispensary.address,
+                              },
+                              onlineDisplayDays: onlineDisplayDays,
+                            };
+                            storeData("doc_dis_cache", selectedModel);
+                            navigation.navigate("SessionScreen");
+                          }}
+                          
+                        />
+                      </View>
+
+
+
                     </ListItem.Content>
                   </ListItem>
                 ))}
@@ -197,7 +221,7 @@ function ChannelScreen({ route, navigation }) {
           )}
         </View>
       </View>
-      <Footer />
+      {/* <Footer /> */}
     </PaperProvider>
   );
 }

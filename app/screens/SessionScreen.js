@@ -145,7 +145,8 @@ function SessionScreen({ route, navigation }) {
       setAppCache(cacheObj);
       doctorId = cacheObj.doctor.doctorId;
       dispensaryId = cacheObj.dispensary.dispensaryId;
-      onlineDisplayDays = cacheObj.onlineDisplayDays;
+      //onlineDisplayDays = cacheObj.onlineDisplayDays;
+      onlineDisplayDays=3;
 
       getResources(
         `${API_SCHEDULE}${query(doctorId, dispensaryId, onlineDisplayDays)}`
@@ -247,7 +248,7 @@ function SessionScreen({ route, navigation }) {
           </View>
         </View>
 
-        <Footer />
+        {/* <Footer /> */}
       </PaperProvider>
     </>
   );

@@ -2,6 +2,7 @@ import React from "react";
 import { StyleSheet, Text, View, Image } from "react-native";
 import { Avatar } from "react-native-elements";
 import { SERVER_HOST } from "../commons/constants";
+import GlobalStyle from "../style/style";
 
 const UserProfile = (props) => {
   return (
@@ -23,11 +24,14 @@ const UserProfile = (props) => {
               // marginTop: 2,
               backgroundColor: "#e3e3de",
             }}
+            title={
+              props.user.name.split(" ")[0][0] + props.user.name.split(" ")[1][0]
+            }
           />
         </View>
       </View>
       <View style={styles(props).profileInfo}>
-        <Text style={styles(props).name}>{props.user.doctorName}</Text>
+        <Text style={styles(props).name}>{props.user.name}</Text>
         <Text style={styles(props).title}>{props.user.speciality}</Text>
         {/* <Text>Special notes</Text> */}
       </View>
@@ -38,12 +42,13 @@ const UserProfile = (props) => {
 const styles = (props) =>
   StyleSheet.create({
     profile_container: {
-      margin: 10,
-      backgroundColor: "white",
-      padding: 8,
+
+      backgroundColor: "#1896c5",
+      paddingBottom:12
+
     },
     image_container: {
-      paddingTop: 20,
+
       alignItems: "center",
       justifyContent: "center",
     },
@@ -53,12 +58,12 @@ const styles = (props) =>
       padding: 6,
     },
     name: {
-      color: "#23b248",
+      color: "#fff",
       fontSize: 16,
       fontWeight: "bold",
     },
     title: {
-      color: "#1d72a3",
+      color: "#fff",
     },
   });
 

@@ -65,7 +65,7 @@ function CityScreen({ route, navigation }) {
 
   return (
     <PaperProvider theme={theme}>
-      <Header name={APP_HEADER_TEXT} />
+      <Header showBackArrow name={APP_HEADER_TEXT} />
       <View style={GlobalStyle.main_container}>
         {/* {<RenderStatusBar />} */}
         {isLoading ? (
@@ -73,8 +73,9 @@ function CityScreen({ route, navigation }) {
         ) : (
           <View style={GlobalStyle.body_container}>
             <View>
-              <Text style={GlobalStyle.title}>District : {district.name}</Text>
-              <Text style={styles.sub_title}>Select your City</Text>
+              <Text style={styles.sub_title}>District : {district.name}</Text>
+              <Text style={GlobalStyle.title}>Select your city</Text>
+              
             </View>
 
             <ScrollView>
@@ -91,7 +92,12 @@ function CityScreen({ route, navigation }) {
                       }}
                       style={[GlobalStyle.item]}
                     >
-                      <Text style={styles.item_text}>{item.name}</Text>
+                      <Icon
+                            name='location'
+                            type='evilicon'
+                            color='#4573a2'
+                            size={20} />
+                      <Text style={GlobalStyle.item_text}>{item.name}</Text>
                     </TouchableOpacity>
                   )}
                   keyExtractor={(item) => item.cityId}
@@ -108,16 +114,14 @@ function CityScreen({ route, navigation }) {
 
 const styles = StyleSheet.create({
   sub_title: {
-    fontSize: 18,
-    color: "#1d72a3",
-    fontWeight: "bold",
-    padding: 5,
-    textAlign: "center",
-  },
-  item_text: {
     fontSize: 16,
-    color: "#2a3d6f",
+    color: "#50a584",
+    fontWeight: "bold",
+    textAlign: "center",
+    marginTop:15,
+    textTransform:'capitalize'
   },
+  
 });
 
 export default CityScreen;

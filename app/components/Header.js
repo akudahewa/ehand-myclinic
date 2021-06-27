@@ -5,7 +5,7 @@ import { StyleSheet, View, Text } from "react-native";
 
 const styles = StyleSheet.create({
   header: {
-    backgroundColor: "#4573a2",
+    backgroundColor: "#1896c5",
     textAlign: "center",
     display: "flex",
     justifyContent: "center",
@@ -13,7 +13,7 @@ const styles = StyleSheet.create({
     paddingLeft: 20
   },
   headerBA:{
-    backgroundColor: "#4573a2",
+    backgroundColor: "#1896c5",
     textAlign: "center",
     display: "flex",
     justifyContent: "center",
@@ -44,7 +44,7 @@ export default function MyHeader(props) {
             labelStyle={{ letterSpacing: 0.5 }}
             uppercase={false}
             mode="text"
-            onPress={() => console.log("Pressed")}
+            onPress={() => {navigation.navigate('MyBookings')}}
           >
             My Bookings
           </Button>
@@ -63,7 +63,7 @@ export default function MyHeader(props) {
             labelStyle={{ letterSpacing: 0.5 }}
             uppercase={false}
             mode="text"
-            onPress={() => console.log("Pressed")}
+            onPress={() => {navigation.navigate('MyBookings')}}
           >
             My Bookings
           </Button>

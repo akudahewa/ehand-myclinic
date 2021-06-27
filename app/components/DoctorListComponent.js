@@ -15,6 +15,7 @@ import { Avatar } from "react-native-elements";
 import { ListItem } from "react-native-elements";
 import ListItemSeparator from "../components/ListItemSeparator";
 import { SERVER_HOST, SCREEN_CHANNEL } from "../commons/constants";
+import GlobalStyle from "../style/style";
 
 const DoctorList = (props) => {
   let cityId = 1;
@@ -24,7 +25,7 @@ const DoctorList = (props) => {
   const [selected, setSelected] = React.useState(new Map());
 
   return (
-    <View style={{ backgroundColor: "white" }}>
+    <View style={{ backgroundColor: "white", flex:1 }}>
       <ScrollView>
         <View>
           {props.doctors.map((doctor, i) => (
@@ -40,7 +41,7 @@ const DoctorList = (props) => {
               <Avatar
                 rounded
                 title={
-                  doctor.name.split(" ")[1][0] + doctor.name.split(" ")[2][0]
+                  doctor.name.split(" ")[0][0] + doctor.name.split(" ")[1][0]
                 }
                 size={40}
                 source={{
@@ -53,8 +54,8 @@ const DoctorList = (props) => {
                 }}
               />
               <ListItem.Content>
-                <ListItem.Title>{doctor.name}</ListItem.Title>
-                <ListItem.Subtitle>{doctor.speciality}</ListItem.Subtitle>
+                <ListItem.Title style={GlobalStyle.listTitleBold}>{doctor.name}</ListItem.Title>
+                <ListItem.Subtitle style={{color:'#50a584'}}>{doctor.speciality}</ListItem.Subtitle>
               </ListItem.Content>
             </ListItem>
           ))}
