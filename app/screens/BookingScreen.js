@@ -27,6 +27,7 @@ import PatientBookingForm from "../components/PatientBookingForm";
 import { PatientContextConsumer } from "../provider/PatientProvider";
 import { API_TNX, SERVER_HOST } from "../commons/constants";
 import { storeData, retrieveData } from "../service/AppLocalCache";
+import { showExceptionAlert, closeApp } from "../commons/index";
 
 function BookingScreen({ route, navigation }) {
   const [isLoading, setIsLoading] = useState(true);
@@ -38,58 +39,32 @@ function BookingScreen({ route, navigation }) {
   const [doctorDispensaryCache, setDoctorDispensaryCache] = useState({});
   const [sessionCache, setSessionCache] = useState({});
 
-  function onSubmit() {
-    console.log(selectedValue + "|" + patientName + " |" + patientNumber);
+  const onSubmit = async () => {
     let sessionId = sessionCache.session.sessionId;
-
     let booking = {
       bookedDate: sessionCache.session.date,
       status: -1,
       mobileNo: patientNumber,
-      patientName: patientName,
     };
-    console.log(
-      "::::::::::::::::::::::::: " +
-        `${SERVER_HOST}/api/${API_TNX}/${sessionId}`
-    );
-    console.log(JSON.stringify(booking));
-    const requestOptions = {
+
+    fetch(`${SERVER_HOST}/api/${API_TNX}/${sessionId}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(booking),
-    };
-    fetch(
-      "http://192.168.1.5:8086/health-service/api/transaction/6",
-      requestOptions
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(JSON.stringify(data));
-        console.log(">>>>>>>>>>>>>>>>>>>>>>>. " + data.id);
+    })
+      .then(function (response) {
+        return response.json();
+      })
+      .then(function (data) {
         navigation.navigate("BookingConfirmScreen", {
           tnxId: data.id,
         });
       })
-      .catch((error) => {
-        console.log("MMMMMMMMMMMMM :: " + JSON.stringify(error));
+      .catch(function (error) {
+        showExceptionAlert(navigation);
+        return true;
       });
-    // (async () => {
-    //   const rawResponse = await fetch(
-    //     `${SERVER_HOST}api/${API_TNX}/${sessionId}`,
-    //     requestOptions
-    //   );
-    //   console.log(
-    //     "xxxxxxxxxxxx ttttttttttttttttttttttttttt " +
-    //       JSON.stringify(rawResponse)
-    //   );
-    //   const content = await rawResponse.json();
-    //   console.log(content);
-    //   console.log("Created tnx id :" + content.id);
-    //   navigation.navigate("BookingConfirmScreen", {
-    //     tnxId: content.id,
-    //   });
-    // })();
-  }
+  };
 
   const onChangePatientName = (val) => {
     setPatientName(val);
@@ -171,15 +146,12 @@ function BookingScreen({ route, navigation }) {
                     <View style={styles.seesion_list}>
                       <View style={styles.same_row}>
                         <Text style={styles.session_data}>
-                          {/* {session.date} {"\n"}
-                              {session.time} */}
                           {sessionCache.session.date}
                           {sessionCache.session.time}
                         </Text>
                         <Text style={styles.appoinment_box}>
                           Active {"\n"}Appoinment {"\n"} 10
                         </Text>
-                        {/* <Text>Time remain {"\n"} 5:00 min</Text> */}
                         <View style={styles.countdown_box}>
                           <CountDown
                             until={330}

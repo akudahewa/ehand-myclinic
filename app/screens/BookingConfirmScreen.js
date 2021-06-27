@@ -17,214 +17,238 @@ import { useNavigation } from "@react-navigation/native";
 import LoadSpinner from "../components/SpinnerComponent";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-import { API_TNX } from "../commons/constants";
+import { API_TNX, SERVER_HOST } from "../commons/constants";
+import { getResources } from "../components/ApiClient";
 import { PatientContextConsumer } from "../provider/PatientProvider";
+import { ScrollView } from "react-native-gesture-handler";
 
 function BookingConfirmScreen({ route, navigation }) {
-  console.log(
-    "===========================booking conform screen ============="
-  );
   const navi = useNavigation();
   const tnxId = route.params.tnxId;
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [transaction, setTransaction] = useState({});
-  let { booking } = {};
 
-  function onSubmit(code, docId, sessionId, date, patientName, patientNumber) {
+  function onSubmit() {
+    let booking = {
+      status: 1,
+    };
     const requestOptions = {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(booking),
     };
-    fetch(`${SERVER_HOST}/api/${API_TNX}/${sessionId}`, requestOptions)
+    fetch(`${SERVER_HOST}/api/${API_TNX}/${tnxId}`, requestOptions)
       .then((response) => response.json())
       .then((data) => {
+        console.log("********************************* " + data);
         console.log(JSON.stringify(data));
-        console.log(">>>>>>>>>>>>>>>>>>>>>>>. " + data.id);
-        navigation.navigate("BookingConfirmScreen", {
+        navigation.navigate("BookingSuccessScreen", {
           tnxId: data.id,
         });
       })
       .catch((error) => {
-        console.log("MMMMMMMMMMMMM :: " + JSON.stringify(error));
+        console.log("Error occur while " + JSON.stringify(error));
       });
   }
 
   /**
    * cancel the transaction
    */
-  const cancel = () => {};
+  // const cancel = () => {};
   useEffect(() => {
-    // call POST request to initiate the booking
-    // post request body
-    // doctor, dispensary,session,patient number
     console.log("BookingConfirmScreen : useEffect -> fetch API records");
-    getResources(API_TNX)
+    getResources(`${API_TNX}/${tnxId}`)
       .then((resource) => {
-        console.log("DistrictScreen => GET :" + JSON.stringify(resource));
+        console.log("BookingConfirmScreen => GET :" + JSON.stringify(resource));
         setTransaction(resource);
         setIsLoading(false);
       })
       .catch((error) => {
-        console.log("Error => GET districts :" + JSON.stringify(error));
+        console.log(
+          "Error => GET BookingConfirmScreen :" + JSON.stringify(error)
+        );
         setIsLoading(false);
         showExceptionAlert(navigation);
         return true;
       })
       .finally(() => {});
   }, []);
+
   return (
     <PaperProvider>
       <Header name="Confirmation" showBackArrow={true} />
       <View style={styles.main_screen}>
-        <LoadSpinner loading={isLoading} />
-        <View style={styles.container}>
-          <View style={styles.header}>
-            <Text style={styles.header_search}>Confirm your Booking</Text>
-          </View>
-
-          <View style={styles.countdown}>
-            <Text style={styles.notice}>Make your booking within </Text>
-            <CountDown
-              until={330}
-              size={18}
-              onFinish={() => {
-                //this.state.navi.navigate("LoadHomeScreen");
-              }}
-              digitStyle={{ backgroundColor: "red" }}
-              digitTxtStyle={{ color: "white" }}
-              timeToShow={["M", "S"]}
-              timeLabels={{ m: "MM", s: "SS" }}
-            />
-          </View>
-          <PatientContextConsumer>
-            {(context) => (
-              <>
-                {/* <ContentTitle titleText={context.state.dispensaryName} /> */}
-                {/* <UserProfile user={context.state.doctor} /> */}
-                <View elevation={2} style={styles.summary}>
-                  <View style={styles.key_value_display}>
-                    <Text style={styles.key_display}>REFERENCE NO :</Text>
-                    <Text style={styles.value_display}>
-                      {transaction.refNumber}
-                    </Text>
-                  </View>
-                  <View style={styles.key_value_display}>
-                    <Text style={styles.key_display}>APPOINMNET NO :</Text>
-                    <Text style={styles.value_display}>15</Text>
-                  </View>
-                  <View style={styles.key_value_display}>
-                    <Text style={styles.key_display}>APPOINMNET TIME :</Text>
-                    <Text style={styles.value_display}>
-                      Wed 2:45 PM
-                      <Text style={styles.display_small}>
-                        (Time may vary doctor's arrival time)
+        {isLoading ? (
+          <LoadSpinner loading={isLoading} loadingText="Please wait ..." />
+        ) : (
+          <View>
+            <ScrollView>
+              <View style={styles.container}>
+                <View style={styles.header}>
+                  <Text style={styles.header_search}>Confirm your Booking</Text>
+                </View>
+                <View style={styles.countdown}>
+                  <Text style={styles.notice}>Make your booking within </Text>
+                  <CountDown
+                    until={330}
+                    size={18}
+                    onFinish={() => {
+                      //this.state.navi.navigate("LoadHomeScreen");
+                    }}
+                    digitStyle={{ backgroundColor: "red" }}
+                    digitTxtStyle={{ color: "white" }}
+                    timeToShow={["M", "S"]}
+                    timeLabels={{ m: "MM", s: "SS" }}
+                  />
+                </View>
+                <>
+                  <View elevation={2} style={styles.summary}>
+                    <View style={styles.key_value_display}>
+                      <Text style={styles.key_display}>REFERENCE NO :</Text>
+                      <Text style={styles.value_display}>
+                        {transaction.refNumber}
                       </Text>
-                    </Text>
-                  </View>
-                  <View style={styles.key_value_display}>
-                    <Text style={styles.key_display}>PATIENT NAME :</Text>
-                    <Text style={styles.value_display}></Text>
-                  </View>
+                    </View>
+                    <View style={styles.key_value_display}>
+                      <Text style={styles.key_display}>APPOINMNET NO :</Text>
+                      <Text style={styles.value_display}>15</Text>
+                    </View>
+                    <View style={styles.key_value_display}>
+                      <Text style={styles.key_display}>APPOINMNET TIME :</Text>
+                      <Text style={styles.value_display}>
+                        Wed 2:45 PM
+                        <Text style={styles.display_small}>
+                          (Time may vary doctor's arrival time)
+                        </Text>
+                      </Text>
+                    </View>
+                    <View style={styles.key_value_display}>
+                      <Text style={styles.key_display}>PATIENT NAME :</Text>
+                      <Text style={styles.value_display}>sss</Text>
+                    </View>
+                    <View style={styles.key_value_display}>
+                      <Text style={styles.key_display}>DOCTOR:</Text>
+                      <Text style={styles.value_display}>
+                        {
+                          transaction.doctorScheduleGrid.doctorDispensary.doctor
+                            .name
+                        }
+                      </Text>
+                    </View>
+                    <View style={styles.key_value_display}>
+                      <Text style={styles.key_display}>DISPENSARY :</Text>
+                      <Text style={styles.value_display}>
+                        {
+                          transaction.doctorScheduleGrid.doctorDispensary
+                            .dispensary.name
+                        }
+                      </Text>
+                    </View>
+                    <View style={styles.key_value_display}>
+                      <Text style={styles.key_display}>Patient No :</Text>
+                      <Text style={styles.value_display}>10</Text>
+                    </View>
+                    <View style={styles.key_value_display}>
+                      <Text style={styles.key_display}>Doctor Fee :</Text>
+                      <Text style={styles.value_display}>
+                        {transaction.doctorScheduleGrid.doctorDispensary
+                          .doctorFee === 0
+                          ? `Pay at dispensary`
+                          : transaction.doctorScheduleGrid.doctorDispensary
+                              .doctorFee}
+                      </Text>
+                    </View>
+                    <View style={styles.key_value_display}>
+                      <Text style={styles.key_display}>Dispensary Fee :</Text>
+                      <Text style={styles.value_display}>
+                        {
+                          transaction.doctorScheduleGrid.doctorDispensary
+                            .dispensaryFee
+                        }
+                      </Text>
+                    </View>
+                    <View style={styles.key_value_display}>
+                      <Text style={styles.key_display}>Booking Fee :</Text>
+                      <Text style={styles.value_display}>
+                        {
+                          transaction.doctorScheduleGrid.doctorDispensary
+                            .bookingFee
+                        }
+                      </Text>
+                    </View>
+                    <View style={styles.key_value_display}>
+                      <Text style={styles.key_display}>Total Fee :</Text>
+                      <Text style={styles.value_display}>10.00</Text>
+                    </View>
 
-                  <View style={styles.key_value_display}>
-                    <Text style={styles.key_display}>DOCTOR:</Text>
-                    <Text style={styles.value_display}>
-                      {context.state.doctor.doctorName}
-                    </Text>
+                    <View style={styles.key_value_display}>
+                      <Text style={styles.key_display}>Patient Name</Text>
+                      <Text style={styles.value_display}>dsdsds</Text>
+                    </View>
+                    <View style={styles.key_value_display}>
+                      <Text style={styles.key_display}>Contact Number</Text>
+                      <Text style={styles.value_display}>
+                        {transaction.mobileNo}
+                      </Text>
+                    </View>
                   </View>
-
-                  <View style={styles.key_value_display}>
-                    <Text style={styles.key_display}>DISPENSARY :</Text>
-                    <Text style={styles.value_display}>
-                      {
-                        transaction.doctorScheduleGrid.doctorDispensary
-                          .dispensary.name
+                </>
+                <View>
+                  <Text style={styles.important_note}>
+                    ** Service charge you have to pay to the dispensary
+                  </Text>
+                </View>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    marginLeft: 10,
+                    marginRight: 10,
+                  }}
+                >
+                  <View style={styles.touchable_center}>
+                    <TouchableOpacity
+                      style={styles.channel}
+                      onPress={() =>
+                        navigation.navigate("BookingScreen", {
+                          doctor: {
+                            // id: doctor.id,
+                            // name: doctor.name,
+                            // photo: doctor.photo,
+                            // speciality: doctor.speciality,
+                          },
+                          dispensary: {
+                            // id: dispensary.id,
+                            // name: dispensary.name,
+                          },
+                          session: {
+                            // id: item.id,
+                            // date: item.date,
+                            // time: item.session,
+                          },
+                        })
                       }
-                    </Text>
+                    >
+                      <Text style={styles.channel_text}>Change</Text>
+                    </TouchableOpacity>
                   </View>
-                  <View style={styles.key_value_display}>
-                    <Text style={styles.key_display}>Patient No :</Text>
-                    <Text style={styles.value_display}>10</Text>
-                  </View>
-                  <View style={styles.key_value_display}>
-                    <Text style={styles.key_display}>Service Chanrge :</Text>
-                    <Text style={styles.value_display}>Rs 30.00</Text>
-                  </View>
-                  <View style={styles.key_value_display}>
-                    <Text style={styles.key_display}>Patient Name</Text>
-                    <Text style={styles.value_display}>dsdsds</Text>
-                  </View>
-                  <View style={styles.key_value_display}>
-                    <Text style={styles.key_display}>Contact Number</Text>
-                    <Text style={styles.value_display}>4444444</Text>
+                  <View style={styles.touchable_center}>
+                    <TouchableOpacity
+                      style={styles.channel}
+                      onPress={() => {
+                        onSubmit();
+                      }}
+                    >
+                      <Text style={styles.channel_text}>Confirm </Text>
+                    </TouchableOpacity>
                   </View>
                 </View>
-              </>
-            )}
-          </PatientContextConsumer>
-
-          <View style={styles.noticeService}>
-            <Text style={styles.important_note}>
-              ** Service charge you have to pay to the dispensary
-            </Text>
+              </View>
+            </ScrollView>
           </View>
-
-          <View
-            style={{ flexDirection: "row", marginLeft: 10, marginRight: 10 }}
-          >
-            <View style={styles.touchable_center}>
-              <TouchableOpacity
-                style={styles.channel}
-                onPress={() =>
-                  navigation.navigate("BookingScreen", {
-                    doctor: {
-                      // id: doctor.id,
-                      // name: doctor.name,
-                      // photo: doctor.photo,
-                      // speciality: doctor.speciality,
-                    },
-                    dispensary: {
-                      // id: dispensary.id,
-                      // name: dispensary.name,
-                    },
-                    session: {
-                      // id: item.id,
-                      // date: item.date,
-                      // time: item.session,
-                    },
-                  })
-                }
-              >
-                <Text style={styles.channel_text}>Change</Text>
-              </TouchableOpacity>
-            </View>
-            <View style={styles.touchable_center}>
-              <PatientContextConsumer>
-                {(context) => (
-                  <TouchableOpacity
-                    style={styles.channel}
-                    onPress={() => {
-                      onSubmit(
-                        "1234",
-                        context.state.doctor.doctorId,
-                        context.state.session.sessionId,
-                        context.state.session.date,
-                        "tesT USER",
-                        "0762199100"
-                      );
-                    }}
-                  >
-                    <Text style={styles.channel_text}>Confirm </Text>
-                  </TouchableOpacity>
-                )}
-              </PatientContextConsumer>
-            </View>
-          </View>
-        </View>
+        )}
         {/* </View> */}
       </View>
-      <Footer />
+      {/* <Footer /> */}
     </PaperProvider>
   );
 }
