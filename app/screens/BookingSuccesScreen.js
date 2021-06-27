@@ -5,137 +5,177 @@ import {
   Provider as PaperProvider,
   IconButton,
 } from "react-native-paper";
-import CountDown from "react-native-countdown-component";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import { API_TNX, SERVER_HOST } from "../commons/constants";
+import { getResources } from "../components/ApiClient";
+import LoadSpinner from "../components/SpinnerComponent";
+import { ScrollView } from "react-native-gesture-handler";
 
 function BookingSuccessScreen({ route, navigation }) {
-  console.log("Booking suceess screen!!!");
-  const { bookingInfo } = route.params;
+  console.log("BookingSuccessScreen !!!");
+  const tnxId = route.params.tnxId;
+  const [isLoading, setIsLoading] = useState(true);
+  const [transaction, setTransaction] = useState({});
 
-  //   const [isLoading, setIsLoading] = useState(true);
-  //   useEffect(() => {
-  //     // call POST request to initiate the booking
-  //     // post request body
-  //     // doctor, dispensary,session,patient number
-  //     fetch("https://reactnative.dev/movies.json")
-  //       .then((response) => response.json())
-  //       .then((json) => {
-  //         var sampleData = {
-  //           doctorId: doctor.id,
-  //           dispensaryId: dispensary.id,
-  //           //   photo: doctor.doctor.photo,
-  //           //   dispensary: dispensary.name,
-  //           //   speciality: doctor.doctor.speciality,
-  //           session: session,
-  //         };
-  //         setData(sampleData);
-  //         // let tmp = [];
-  //         // json.movies.map(function (m) {
-  //         //   let j = { label: m.title, value: m.id };
-  //         //   tmp.push(j);
-  //         // });
-  //         // setDrList(tmp);
-  //       })
-  //       .catch((error) => {
-  //         Alert.alert("My Clinic", "Data not loading properly.Try again later");
-  //       })
-  //       .finally(() => {
-  //         setIsLoading(false);
-  //       });
-  //   }, []);
+  useEffect(() => {
+    console.log("BookingSuccessScreen : useEffect -> fetch API records");
+    console.log(`${API_TNX}/${tnxId}`);
+    getResources(`${API_TNX}/${tnxId}`)
+      .then((resource) => {
+        console.log("BookingSuccessScreen => GET :" + JSON.stringify(resource));
+        setTransaction(resource);
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        console.log(
+          "Error => GET BookingSuccessScreen :" + JSON.stringify(error)
+        );
+        setIsLoading(false);
+        showExceptionAlert(navigation);
+        return true;
+      })
+      .finally(() => {});
+  }, []);
+
   return (
     <PaperProvider>
       <Header name="My Clinic" showBackArrow={true} />
-      <View style={styles.main_screen}>
-        <View style={styles.container}>
-          <View style={styles.success}>
-            <Text style={styles.success_message}>Booking Completed !</Text>
-          </View>
-          <View style={styles.countdown}>
-            <Text style={{ textAlign: "center" }}>
-              You will be recevied a sms. please keep remember to show that sms
-              to dispensary{" "}
-            </Text>
-          </View>
-          <View elevation={2} style={styles.summary}>
-            <View style={styles.key_value_display}>
-              <Text style={styles.key_display}>REFERENCE NO :</Text>
-              <Text style={styles.value_display}>
-                {bookingInfo.referenceNo}
-              </Text>
-            </View>
-            <View style={styles.key_value_display}>
-              <Text style={styles.key_display}>APPOINMENT DATE :</Text>
-              <Text style={styles.value_display}>
-                {bookingInfo.appoinmentDate}
-              </Text>
-            </View>
-            <View style={styles.key_value_display}>
-              <Text style={styles.key_display}>APPOINMNET TIME :</Text>
-              <Text style={styles.value_display}>
-                {bookingInfo.appoinmentTime}
-                <Text style={styles.display_small}>
-                  (Time may vary doctor's arrival time)
+      <ScrollView>
+        <View style={styles.main_screen}>
+          {isLoading ? (
+            <LoadSpinner loading={isLoading} loadingText="Please wait ..." />
+          ) : (
+            <View style={styles.container}>
+              <View style={styles.success}>
+                <Text style={styles.success_message}>Booking Completed !</Text>
+              </View>
+              <View style={styles.countdown}>
+                <Text style={{ textAlign: "center" }}>
+                  You will be recevied a sms. please keep remember to show that
+                  sms to dispensary{" "}
                 </Text>
-              </Text>
-            </View>
+              </View>
+              <View elevation={2} style={styles.summary}>
+                <View style={styles.key_value_display}>
+                  <Text style={styles.key_display}>REFERENCE NO :</Text>
+                  <Text style={styles.value_display}>
+                    {transaction.refNumber}
+                  </Text>
+                </View>
+                <View style={styles.key_value_display}>
+                  <Text style={styles.key_display}>APPOINMENT DATE :</Text>
+                  <Text style={styles.value_display}>
+                    {transaction.bookedDate}
+                  </Text>
+                </View>
+                <View style={styles.key_value_display}>
+                  <Text style={styles.key_display}>APPOINMNET TIME :</Text>
+                  <Text style={styles.value_display}>
+                    {transaction.doctorScheduleGrid.sessionStart}
+                    <Text style={styles.display_small}>
+                      (Time may vary doctor's arrival time)
+                    </Text>
+                  </Text>
+                </View>
 
-            <View style={styles.key_value_display}>
-              <Text style={styles.key_display}>APPOINMNET NO :</Text>
-              <Text style={styles.value_display}>
-                {bookingInfo.appoinmentNo}
-              </Text>
-            </View>
+                <View style={styles.key_value_display}>
+                  <Text style={styles.key_display}>APPOINMNET NO :</Text>
+                  <Text style={styles.value_display}>10</Text>
+                </View>
 
-            <View style={styles.key_value_display}>
-              <Text style={styles.key_display}>PATIENT NAME :</Text>
-              <Text style={styles.value_display}>{bookingInfo.patient}</Text>
-            </View>
+                <View style={styles.key_value_display}>
+                  <Text style={styles.key_display}>PATIENT NAME :</Text>
+                  <Text style={styles.value_display}>
+                    {transaction.mobileNo}
+                  </Text>
+                </View>
 
-            <View style={styles.key_value_display}>
-              <Text style={styles.key_display}>DOCTOR:</Text>
-              <Text style={styles.value_display}>{bookingInfo.doctor}</Text>
-            </View>
+                <View style={styles.key_value_display}>
+                  <Text style={styles.key_display}>DOCTOR:</Text>
+                  <Text style={styles.value_display}>
+                    {
+                      transaction.doctorScheduleGrid.doctorDispensary.doctor
+                        .name
+                    }
+                  </Text>
+                </View>
 
-            <View style={styles.key_value_display}>
-              <Text style={styles.key_display}>DISPENSARY :</Text>
-              <Text style={styles.value_display}>{bookingInfo.dispensary}</Text>
-            </View>
+                <View style={styles.key_value_display}>
+                  <Text style={styles.key_display}>DISPENSARY :</Text>
+                  <Text style={styles.value_display}>
+                    {
+                      transaction.doctorScheduleGrid.doctorDispensary.dispensary
+                        .name
+                    }
+                  </Text>
+                </View>
 
-            <View style={styles.key_value_display}>
-              <Text style={styles.key_display}>BOOKING FEE :</Text>
-              <Text style={styles.value_display}>{bookingInfo.bookingFee}</Text>
-            </View>
-            <View style={styles.key_value_display}>
-              <Text style={styles.key_display}>SPECIALITY</Text>
-              <Text style={styles.value_display}>{bookingInfo.speciality}</Text>
-            </View>
-            <View style={styles.key_value_display}>
-              <Text style={styles.key_display}>CONTACT NUMBER</Text>
-              <Text style={styles.value_display}>
-                {bookingInfo.contactNumber}
-              </Text>
-            </View>
-          </View>
-          <View style={styles.noticeService}>
-            <Text style={styles.important_note}>
-              ** Booking fee you have to pay to the dispensary
-            </Text>
-          </View>
+                <View style={styles.key_value_display}>
+                  <Text style={styles.key_display}>Doctor Fee :</Text>
+                  <Text style={styles.value_display}>
+                    {transaction.doctorScheduleGrid.doctorDispensary
+                      .doctorFee === 0
+                      ? `Pay at dispensary`
+                      : transaction.doctorScheduleGrid.doctorDispensary
+                          .doctorFee}
+                  </Text>
+                </View>
+                <View style={styles.key_value_display}>
+                  <Text style={styles.key_display}>Dispensary Fee :</Text>
+                  <Text style={styles.value_display}>
+                    {
+                      transaction.doctorScheduleGrid.doctorDispensary
+                        .dispensaryFee
+                    }
+                  </Text>
+                </View>
+                <View style={styles.key_value_display}>
+                  <Text style={styles.key_display}>Booking Fee :</Text>
+                  <Text style={styles.value_display}>
+                    {transaction.doctorScheduleGrid.doctorDispensary.bookingFee}
+                  </Text>
+                </View>
+                <View style={styles.key_value_display}>
+                  <Text style={styles.key_display}>Total Fee :</Text>
+                  <Text style={styles.value_display}>10.00</Text>
+                </View>
+                <View style={styles.key_value_display}>
+                  <Text style={styles.key_display}>SPECIALITY</Text>
+                  <Text style={styles.value_display}>
+                    {
+                      transaction.doctorScheduleGrid.doctorDispensary.doctor
+                        .speciality
+                    }
+                  </Text>
+                </View>
+                <View style={styles.key_value_display}>
+                  <Text style={styles.key_display}>CONTACT NUMBER</Text>
+                  <Text style={styles.value_display}>
+                    {transaction.mobileNo}
+                  </Text>
+                </View>
+              </View>
+              <View style={styles.noticeService}>
+                <Text style={styles.important_note}>
+                  ** Booking fee you have to pay to the dispensary
+                </Text>
+              </View>
 
-          <View style={{ flexDirection: "row" }}>
-            <View style={styles.touchable_center}>
-              <TouchableOpacity
-                style={styles.channel}
-                onPress={() => navigation.navigate("DistrictScreen")}
-              >
-                <Text style={styles.channel_text}>Go to Home</Text>
-              </TouchableOpacity>
+              <View style={{ flexDirection: "row" }}>
+                <View style={styles.touchable_center}>
+                  <TouchableOpacity
+                    style={styles.channel}
+                    onPress={() => navigation.navigate("DistrictScreen")}
+                  >
+                    <Text style={styles.channel_text}>Go to Home</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
             </View>
-          </View>
+          )}
         </View>
-      </View>
+      </ScrollView>
       <Footer />
     </PaperProvider>
   );

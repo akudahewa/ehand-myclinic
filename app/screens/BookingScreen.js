@@ -27,6 +27,7 @@ import PatientBookingForm from "../components/PatientBookingForm";
 import { PatientContextConsumer } from "../provider/PatientProvider";
 import { API_TNX, SERVER_HOST } from "../commons/constants";
 import { storeData, retrieveData } from "../service/AppLocalCache";
+import { showExceptionAlert, closeApp } from "../commons/index";
 
 function BookingScreen({ route, navigation }) {
   const [isLoading, setIsLoading] = useState(true);
@@ -37,59 +38,38 @@ function BookingScreen({ route, navigation }) {
   const [patientNumber, setPatientNumber] = useState("");
   const [doctorDispensaryCache, setDoctorDispensaryCache] = useState({});
   const [sessionCache, setSessionCache] = useState({});
+  const [patientNameError, setPatientNameError] = useState("");
+  const [patientNumberError, setPatientNumberError] = useState("");
 
-  function onSubmit() {
-    console.log(selectedValue + "|" + patientName + " |" + patientNumber);
-    let sessionId = sessionCache.session.sessionId;
+  const onSubmit = async () => {
+    console.log("------------------submit form --------------------");
+    if (validate()) {
+      let sessionId = sessionCache.session.sessionId;
+      let booking = {
+        bookedDate: sessionCache.session.date,
+        status: -1,
+        mobileNo: patientNumber,
+      };
 
-    let booking = {
-      bookedDate: sessionCache.session.date,
-      status: -1,
-      mobileNo: patientNumber,
-      patientName: patientName,
-    };
-    console.log(
-      "::::::::::::::::::::::::: " +
-        `${SERVER_HOST}/api/${API_TNX}/${sessionId}`
-    );
-    console.log(JSON.stringify(booking));
-    const requestOptions = {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(booking),
-    };
-    fetch(
-      "http://192.168.1.5:8086/health-service/api/transaction/6",
-      requestOptions
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(JSON.stringify(data));
-        console.log(">>>>>>>>>>>>>>>>>>>>>>>. " + data.id);
-        navigation.navigate("BookingConfirmScreen", {
-          tnxId: data.id,
-        });
+      fetch(`${SERVER_HOST}/api/${API_TNX}/${sessionId}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(booking),
       })
-      .catch((error) => {
-        console.log("MMMMMMMMMMMMM :: " + JSON.stringify(error));
-      });
-    // (async () => {
-    //   const rawResponse = await fetch(
-    //     `${SERVER_HOST}api/${API_TNX}/${sessionId}`,
-    //     requestOptions
-    //   );
-    //   console.log(
-    //     "xxxxxxxxxxxx ttttttttttttttttttttttttttt " +
-    //       JSON.stringify(rawResponse)
-    //   );
-    //   const content = await rawResponse.json();
-    //   console.log(content);
-    //   console.log("Created tnx id :" + content.id);
-    //   navigation.navigate("BookingConfirmScreen", {
-    //     tnxId: content.id,
-    //   });
-    // })();
-  }
+        .then(function (response) {
+          return response.json();
+        })
+        .then(function (data) {
+          navigation.navigate("BookingConfirmScreen", {
+            tnxId: data.id,
+          });
+        })
+        .catch(function (error) {
+          showExceptionAlert(navigation);
+          return true;
+        });
+    }
+  };
 
   const onChangePatientName = (val) => {
     setPatientName(val);
@@ -129,6 +109,19 @@ function BookingScreen({ route, navigation }) {
         setSessionCache(value);
       }
     });
+  };
+  const validate = () => {
+    const regex = /^(?:0|94|\+94)?(?:(11|21|23|24|25|26|27|31|32|33|34|35|36|37|38|41|45|47|51|52|54|55|57|63|65|66|67|81|912)(0|2|3|4|5|7|9)|7(0|1|2|5|6|7|8)\d)\d{6}$/;
+    let isValid = true;
+    if (patientName.length < 5) {
+      isValid = false;
+      setPatientNameError("name should be minimum 4 letters");
+    }
+    if (regex.test(patientNumber) === false) {
+      isValid = false;
+      setPatientNumberError("Invalid phone number");
+    }
+    return isValid;
   };
 
   useEffect(() => {
@@ -171,15 +164,12 @@ function BookingScreen({ route, navigation }) {
                     <View style={styles.seesion_list}>
                       <View style={styles.same_row}>
                         <Text style={styles.session_data}>
-                          {/* {session.date} {"\n"}
-                              {session.time} */}
                           {sessionCache.session.date}
                           {sessionCache.session.time}
                         </Text>
                         <Text style={styles.appoinment_box}>
                           Active {"\n"}Appoinment {"\n"} 10
                         </Text>
-                        {/* <Text>Time remain {"\n"} 5:00 min</Text> */}
                         <View style={styles.countdown_box}>
                           <CountDown
                             until={330}
@@ -214,17 +204,11 @@ function BookingScreen({ route, navigation }) {
                     </Picker>
                     <Input
                       placeholder="Enter patient name"
-                      // errorStyle={{ color: "red" }}
-                      // value={patientName}
-                      // onChangeText={text => setText(text)}
                       defaultValue={patientName}
                       onChangeText={(patientName) => {
-                        // console.log(
-                        //   "++++++++++++++++++++++++++++++++ " + patientName
-                        // );
                         setPatientName(patientName);
                       }}
-                      // errorMessage="Please enter name"
+                      errorMessage={patientNameError}
                     />
                     <Input
                       style={{
@@ -234,17 +218,13 @@ function BookingScreen({ route, navigation }) {
                         placeholderTextColor: "gray",
                       }}
                       keyboardType="number-pad"
-                      // sonChangeText={(text) => setTextInputValue(text)}
                       defaultValue={patientNumber}
                       onChangeText={(patientNumber) => {
-                        // console.log(
-                        //   "++++++++++++++++++++++++++++++++ " + patientName
-                        // );
                         setPatientNumber(patientNumber);
                       }}
                       placeholder="Patient phone number"
                       errorStyle={{ color: "red" }}
-                      errorMessage="Please enter name"
+                      errorMessage={patientNumberError}
                     />
                   </SafeAreaView>
                   <TouchableOpacity
