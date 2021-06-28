@@ -30,7 +30,7 @@ const DoctorList = (props) => {
         <View>
           {props.doctors.map((doctor, i) => (
             <ListItem
-              key={i}
+              key={'doctor'+i}
               bottomDivider
               onPress={() => {
                 props.navi.navigate(SCREEN_CHANNEL, {

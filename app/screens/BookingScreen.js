@@ -155,14 +155,13 @@ function BookingScreen({ route, navigation }) {
                         doctorDispensaryCache.dispensary.dispensaryName
                       }
                     />
-
-                    <View style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                      <Text style={{ color: '#f43838' }}>Special notes</Text>
-                      <Text style={{ color: '#f43838' }}>Extra appoinmnets not given by the doctor</Text>
-                    </View>
                     <View style={styles.sessions_header_bar}>
                       <Text style={styles.session_header}>Session Details</Text>
                     </View>
+                    <View style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                      <Text style={{ color: '#f43838', fontSize:12 }}>*Extra appoinmnets not given by the doctor</Text>
+                    </View>
+
                     <View style={GlobalStyle.seesion_list}>
                       <View style={GlobalStyle.same_row}>
                         <View style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
@@ -195,11 +194,11 @@ function BookingScreen({ route, navigation }) {
                   </>
                 ) : null}
 
-                <View style={styles.doc_profile}>
+                <View style={styles.formView}>
                   <SafeAreaView>
                     <Picker
                       selectedValue={selectedValue}
-                      style={{ height: 50, width: 150 }}
+                      style={{ height: 50, width: 120, color: 'gray', marginLeft:2, fontSize:15}}
                       onValueChange={(itemValue, itemIndex) =>
                         setSelectedValue(itemValue)
                       }
@@ -216,6 +215,8 @@ function BookingScreen({ route, navigation }) {
                         setPatientName(patientName);
                       }}
                       errorMessage={patientNameError}
+                      inputContainerStyle={{borderBottomColor:'#ddd'}}
+                      style={{fontSize:14}}
                     />
                     <Input
                       style={{
@@ -223,6 +224,7 @@ function BookingScreen({ route, navigation }) {
                         // borderColor: "gray",
                         // borderBottomWidth: 1,
                         placeholderTextColor: "gray",
+                        fontSize:14
                       }}
                       keyboardType="number-pad"
                       defaultValue={patientNumber}
@@ -232,6 +234,7 @@ function BookingScreen({ route, navigation }) {
                       placeholder="Patient phone number"
                       errorStyle={{ color: "red" }}
                       errorMessage={patientNumberError}
+                      inputContainerStyle={{borderBottomColor:'#ddd'}}
                     />
                   </SafeAreaView>
                   <TouchableOpacity
@@ -257,6 +260,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "flex-end",
+    backgroundColor: '#fff'
   },
   main_screen: {
     flex: 1,
@@ -277,23 +281,29 @@ const styles = StyleSheet.create({
     // width: 335,
     // padding: 5,
   },
-  
-  
- 
-  
-  
+
+  formView: {
+    paddingHorizontal:15,
+    backgroundColor: 'rgba(24, 150, 197, 0.1)',
+    flex: 1,
+    margin: 15,
+    borderRadius: 5,
+    paddingBottom:15
+  },
+
+
+
   sessions_header_bar: {
     marginTop: 10,
     backgroundColor: "white",
   },
   session_header: {
-    padding: 10,
-    textAlign:'center',
-    borderColor:'#ddd',
-    borderBottomWidth:1
+    //padding: 10,
+    textAlign: 'center',
+    fontWeight:'bold'
   },
-  
-  
+
+
   header_text: {
     margin: 25,
     fontSize: 18,
@@ -314,6 +324,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "white",
   },
- 
+
 });
 export default BookingScreen;
