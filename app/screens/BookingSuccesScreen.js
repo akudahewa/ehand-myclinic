@@ -176,7 +176,7 @@ function BookingSuccessScreen({ route, navigation }) {
           )}
         </View>
       </ScrollView>
-      <Footer />
+      {/* <Footer /> */}
     </PaperProvider>
   );
 }

@@ -117,7 +117,7 @@ function DistrictScreen({ navigation }) {
                       )}
                     </PatientContextConsumer>
                   )}
-                  keyExtractor={(item) => item.id}
+                  keyExtractor={(item) => 'distric'+item.id}
                   extraData={selected}
                 />
               </View>

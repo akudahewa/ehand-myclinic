@@ -71,7 +71,7 @@ function BookingConfirmScreen({ route, navigation }) {
         showExceptionAlert(navigation);
         return true;
       })
-      .finally(() => {});
+      .finally(() => { });
   }, []);
 
   return (
@@ -88,7 +88,7 @@ function BookingConfirmScreen({ route, navigation }) {
                   <Text style={styles.header_search}>Confirm your Booking</Text>
                 </View>
                 <View style={styles.countdown}>
-                  <Text style={styles.notice}>Make your booking within </Text>
+                  <Text style={styles.notice}>Make your booking within</Text>
                   <CountDown
                     until={330}
                     size={18}
@@ -102,7 +102,7 @@ function BookingConfirmScreen({ route, navigation }) {
                   />
                 </View>
                 <>
-                  <View elevation={2} style={styles.summary}>
+                  <View style={styles.summary}>
                     <View style={styles.key_value_display}>
                       <Text style={styles.key_display}>REFERENCE NO :</Text>
                       <Text style={styles.value_display}>
@@ -155,7 +155,7 @@ function BookingConfirmScreen({ route, navigation }) {
                           .doctorFee === 0
                           ? `Pay at dispensary`
                           : transaction.doctorScheduleGrid.doctorDispensary
-                              .doctorFee}
+                            .doctorFee}
                       </Text>
                     </View>
                     <View style={styles.key_value_display}>
@@ -207,7 +207,7 @@ function BookingConfirmScreen({ route, navigation }) {
                 >
                   <View style={styles.touchable_center}>
                     <TouchableOpacity
-                      style={styles.channel}
+                      style={styles.change}
                       onPress={() =>
                         navigation.navigate("BookingScreen", {
                           doctor: {
@@ -233,7 +233,7 @@ function BookingConfirmScreen({ route, navigation }) {
                   </View>
                   <View style={styles.touchable_center}>
                     <TouchableOpacity
-                      style={styles.channel}
+                      style={styles.confirm}
                       onPress={() => {
                         onSubmit();
                       }}
@@ -282,15 +282,16 @@ const styles = StyleSheet.create({
     paddingRight: 15,
   },
   important_note: {
-    fontSize: 16,
+    fontSize: 12,
     color: "red",
     textAlign: "center",
   },
   summary: {
     padding: 10,
-    borderRadius: 3,
+    borderRadius: 5,
     margin: 15,
-    // backgroundColor: "yellow",
+    borderColor: "#1896c5",
+    borderWidth: 1
   },
   key_value_display: {
     flexDirection: "row",
@@ -299,11 +300,14 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 14,
     margin: 5,
+    textTransform: 'capitalize',
+    color: '#1896c5'
   },
   value_display: {
     flex: 1,
     fontSize: 15,
     fontWeight: "bold",
+    color: '#1896c5'
   },
   display_small: {
     fontSize: 12,
@@ -319,6 +323,22 @@ const styles = StyleSheet.create({
     alignItems: "center",
     // justifyContent: "center",
     backgroundColor: "#1d72a3",
+    borderRadius: 5,
+  },
+  confirm: {
+    backgroundColor: '#43b366',
+    height: 35,
+    margin: 10,
+    padding: 5,
+    alignItems: "center",
+    borderRadius: 5,
+  },
+  change: {
+    backgroundColor: '#1d72a3',
+    height: 35,
+    margin: 10,
+    padding: 5,
+    alignItems: "center",
     borderRadius: 5,
   },
   channel_text: {

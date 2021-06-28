@@ -24,6 +24,7 @@ import { showExceptionAlert, closeApp } from "../commons/index";
 import { API_SCHEDULE, CACHE_DOC_DIS } from "../commons/constants";
 import { retrieveData } from "../service/AppLocalCache";
 import { storeData } from "../service/AppLocalCache";
+import GlobalStyle from "../style/style";
 
 function RenderSeparator() {
   return (
@@ -31,7 +32,7 @@ function RenderSeparator() {
       style={{
         height: 1,
         width: "100%",
-        backgroundColor: "#000",
+        backgroundColor: "#ddd",
       }}
     />
   );
@@ -73,20 +74,20 @@ function loadBookAction(status) {
   if (status == "AVAILABLE") {
     return {
       flex: 1,
-      height: 35,
+      height: 40,
       // width: 70,
       margin: 5,
       marginTop: 10,
       marginBottom: 10,
       alignItems: "center",
       justifyContent: "center",
-      backgroundColor: "#1d72a3",
+      backgroundColor: "#43b366",
       borderRadius: 3,
     };
   } else {
     return {
       flex: 1,
-      height: 35,
+      height: 40,
       // width: 70,
       margin: 5,
       marginTop: 10,
@@ -146,7 +147,7 @@ function SessionScreen({ route, navigation }) {
       doctorId = cacheObj.doctor.doctorId;
       dispensaryId = cacheObj.dispensary.dispensaryId;
       //onlineDisplayDays = cacheObj.onlineDisplayDays;
-      onlineDisplayDays=3;
+      onlineDisplayDays = 3;
 
       getResources(
         `${API_SCHEDULE}${query(doctorId, dispensaryId, onlineDisplayDays)}`
@@ -165,7 +166,7 @@ function SessionScreen({ route, navigation }) {
           setIsLoading(false);
           showExceptionAlert(navigation);
         })
-        .finally(() => {});
+        .finally(() => { });
     });
   }, []);
 
@@ -182,32 +183,38 @@ function SessionScreen({ route, navigation }) {
                 <PatientContextConsumer>
                   {(context) => (
                     <>
-                      <ContentTitle
-                        titleText={appCache.dispensary.dispensaryName}
-                      />
                       <UserProfile user={appCache.doctor} />
+                      <ContentTitle
+                        titleText={appCache.dispensary.dispensaryName + " Sessions"}
+                      />
+
                     </>
                   )}
                 </PatientContextConsumer>
 
-                <View style={styles.sessions_header_bar}>
+                {/* <View style={styles.sessions_header_bar}>
                   <Text style={styles.session_header}>
                     {appCache.dispensary.dispensaryName} SESSIONS
                   </Text>
-                </View>
+                </View> */}
                 <View style={styles.scrollContainer}>
                   <ScrollView showsVerticalScrollIndicator={false}>
-                    <View style={styles.seesion_list}>
+                    <View style={GlobalStyle.seesion_list}>
                       <FlatList
-                        ItemSeparatorComponent={ListItemSeparator}
+                        //ItemSeparatorComponent={ListItemSeparator}
                         data={data}
                         renderItem={({ item }) => (
                           <View>
-                            <View style={styles.same_row}>
-                              <Text style={styles.session_data}>
-                                {item.date} {"\n"} {item.sessionStartTime}
+                            <View style={GlobalStyle.same_row}>
+                              <View style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}><Text style={styles.session_data}>
+                                {item.date}
                               </Text>
-                              <Text style={styles.appoinment_box}>
+                                <Text style={GlobalStyle.session_data_time}>
+                                  MON / {item.sessionStartTime}
+                                </Text>
+                                </View>
+
+                              <Text style={GlobalStyle.appoinment_box}>
                                 Active {"\n"}Appoinment {"\n"}{" "}
                                 {item.nextAppoinmentNo}
                               </Text>
@@ -229,7 +236,7 @@ function SessionScreen({ route, navigation }) {
                                       navigation.navigate("BookingScreen");
                                     }}
                                   >
-                                    <Text style={styles.channel_text}>
+                                    <Text style={GlobalStyle.channel_text}>
                                       Book
                                     </Text>
                                   </TouchableOpacity>
@@ -262,120 +269,15 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "flex-start",
   },
-  doc_profile: {
-    margin: 10,
-    backgroundColor: "white",
-    padding: 8,
-  },
-  dis_header: {
-    padding: 5,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#e3f6fc",
-    paddingBottom: 10,
-    paddingTop: 10,
-    elevation: 5,
-  },
-  image_container: {
-    paddingTop: 20,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  tinyLogo: {
-    width: 100,
-    height: 100,
-  },
-  doc_description: {
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 6,
-  },
-  doc_name: {
-    color: "#23b248",
-    fontSize: 16,
-    fontWeight: "bold",
-  },
+
   sessions_header_bar: {
-    margin: 10,
     backgroundColor: "white",
   },
   session_header: {
     padding: 10,
     textAlign: "center",
   },
-  seesion_list: {
-    margin: 10,
-    backgroundColor: "white",
-    flex: 1,
-  },
-  head: { height: 40, backgroundColor: "#f1f8ff" },
-  text: { margin: 6, alignItems: "center", justifyContent: "center" },
-  row: {
-    //height: 70,
-    backgroundColor: "white",
-  },
-  item: {
-    padding: 10,
-    fontSize: 18,
-    //height: 44,
-  },
-  header_text: {
-    margin: 25,
-    fontSize: 18,
-    fontWeight: "bold",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  channel: {
-    flex: 1,
-    //height: 35,
-    // width: 70,
-    margin: 5,
-    marginTop: 10,
-    marginBottom: 10,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#1d72a3",
-    borderRadius: 3,
-  },
-  channel_text: {
-    fontSize: 14,
-    color: "white",
-  },
-  same_row: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignContent: "center",
-  },
-  session_data: {
-    flex: 1,
-    padding: 5,
-  },
-  appoinment_box: {
-    flex: 1,
-    padding: 5,
-    textAlign: "center",
-  },
-  grid_dis_text: {
-    backgroundColor: "#A5BFB2",
-    fontSize: 18,
-    padding: 5,
-    fontWeight: "bold",
-  },
-  grid_doc_text: {
-    fontSize: 18,
-    padding: 5,
-    width: 190,
-  },
-  grid_doc_title_text: {
-    fontSize: 14,
-    padding: 2,
-  },
-  fixToText: {
-    paddingTop: 10,
-    flexDirection: "row",
-    justifyContent: "space-between",
-  },
+ 
   scrollContainer: {
     display: "flex",
     height: deviceHeight - 460,
