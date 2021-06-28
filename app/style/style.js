@@ -53,5 +53,46 @@ module.exports = StyleSheet.create({
   listTitleBold:{
     fontWeight:'bold',
     color:'#4573a2'
-  }
+  },
+  sessions_header_bar: {
+    backgroundColor: "white",
+  },
+  session_header: {
+    padding: 10,
+    textAlign: "center",
+  },
+  seesion_list: {
+    backgroundColor: "white",
+    flex: 1,
+    paddingTop: 10
+  },
+
+
+  channel_text: {
+    fontSize: 14,
+    color: "white",
+  },
+  same_row: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignContent: "center",
+    paddingVertical: 5,
+    paddingHorizontal: 15
+  },
+  session_data: {
+    flex: 2,
+    alignItems: 'center'
+  },
+  session_data_time: {
+    fontWeight: "bold",
+    color: '#f43838'
+  },
+  appoinment_box: {
+    flex: 2,
+    //padding: 5,
+    textAlign: "center",
+  },
+
+
+  
 });

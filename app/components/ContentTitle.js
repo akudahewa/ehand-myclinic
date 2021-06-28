@@ -16,10 +16,10 @@ const styles = (props) =>
       padding: props.padding || 5,
       alignItems: "center",
       justifyContent: "center",
-      backgroundColor: props.backgroundColor || "#fff",
+      backgroundColor: props.backgroundColor || "#f2f0f0",
       paddingBottom: props.paddingBottom || 10,
       paddingTop: props.paddingTop || 10,
-      elevation: props.elevation || 5,
+      //elevation: props.elevation || 5,
     },
     titleText: {
       fontSize: props.fontSize || 18,

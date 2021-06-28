@@ -28,6 +28,7 @@ import { PatientContextConsumer } from "../provider/PatientProvider";
 import { API_TNX, SERVER_HOST } from "../commons/constants";
 import { storeData, retrieveData } from "../service/AppLocalCache";
 import { showExceptionAlert, closeApp } from "../commons/index";
+import GlobalStyle from "../style/style";
 
 function BookingScreen({ route, navigation }) {
   const [isLoading, setIsLoading] = useState(true);
@@ -144,30 +145,36 @@ function BookingScreen({ route, navigation }) {
           {isLoading ? (
             <LoadSpinner loading={isLoading} loadingText="Loading" />
           ) : (
-            <ScrollView>
+            <ScrollView keyboardShouldPersistTaps='always'>
               <View style={{ flex: 1, marginBottom: 30 }}>
                 {keyboardState ? (
                   <>
+                    <UserProfile user={doctorDispensaryCache.doctor} />
                     <ContentTitle
                       titleText={
                         doctorDispensaryCache.dispensary.dispensaryName
                       }
                     />
-                    <UserProfile user={doctorDispensaryCache.doctor} />
-                    <View>
-                      <Text>Special notes</Text>
-                      <Text> Extra appoinmnets not given by the doctor</Text>
+
+                    <View style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                      <Text style={{ color: '#f43838' }}>Special notes</Text>
+                      <Text style={{ color: '#f43838' }}>Extra appoinmnets not given by the doctor</Text>
                     </View>
                     <View style={styles.sessions_header_bar}>
-                      <Text style={styles.session_header}>SESSION</Text>
+                      <Text style={styles.session_header}>Session Details</Text>
                     </View>
-                    <View style={styles.seesion_list}>
-                      <View style={styles.same_row}>
-                        <Text style={styles.session_data}>
-                          {sessionCache.session.date}
-                          {sessionCache.session.time}
-                        </Text>
-                        <Text style={styles.appoinment_box}>
+                    <View style={GlobalStyle.seesion_list}>
+                      <View style={GlobalStyle.same_row}>
+                        <View style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                          <Text style={styles.session_data}>
+                            {sessionCache.session.date}
+                          </Text>
+                          <Text style={GlobalStyle.session_data_time}>
+                            MON / {sessionCache.session.time}
+                          </Text>
+                        </View>
+
+                        <Text style={GlobalStyle.appoinment_box}>
                           Active {"\n"}Appoinment {"\n"} 10
                         </Text>
                         <View style={styles.countdown_box}>
@@ -213,8 +220,8 @@ function BookingScreen({ route, navigation }) {
                     <Input
                       style={{
                         // height: 40,
-                        borderColor: "gray",
-                        borderBottomWidth: 1,
+                        // borderColor: "gray",
+                        // borderBottomWidth: 1,
                         placeholderTextColor: "gray",
                       }}
                       keyboardType="number-pad"
@@ -241,7 +248,7 @@ function BookingScreen({ route, navigation }) {
           )}
         </View>
       </View>
-      <Footer />
+      {/* <Footer /> */}
     </PaperProvider>
   );
 }
@@ -270,49 +277,23 @@ const styles = StyleSheet.create({
     // width: 335,
     // padding: 5,
   },
-  dis_header: {
-    padding: 5,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  image_container: {
-    padding: 20,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  tinyLogo: {
-    width: 100,
-    height: 100,
-  },
-  doc_description: {
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  doc_name: {
-    color: "#23b248",
-    fontSize: 16,
-    fontWeight: "bold",
-  },
+  
+  
+ 
+  
+  
   sessions_header_bar: {
     marginTop: 10,
     backgroundColor: "white",
   },
   session_header: {
     padding: 10,
+    textAlign:'center',
+    borderColor:'#ddd',
+    borderBottomWidth:1
   },
-  seesion_list: {
-    marginTop: 10,
-    marginBottom: 10,
-    backgroundColor: "white",
-  },
-  head: { height: 40, backgroundColor: "#f1f8ff" },
-  text: { margin: 6, alignItems: "center", justifyContent: "center" },
-  row: { height: 70, backgroundColor: "white" },
-  item: {
-    padding: 10,
-    fontSize: 18,
-    height: 44,
-  },
+  
+  
   header_text: {
     margin: 25,
     fontSize: 18,
@@ -333,41 +314,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "white",
   },
-  same_row: {
-    flexDirection: "row",
-    padding: 5,
-  },
-  session_data: {
-    flex: 1,
-  },
-  appoinment_box: {
-    flex: 1,
-    padding: 5,
-    textAlign: "center",
-  },
-  countdown_box: {
-    flex: 1,
-  },
-  grid_dis_text: {
-    backgroundColor: "#A5BFB2",
-    fontSize: 18,
-    padding: 5,
-    fontWeight: "bold",
-  },
-  grid_doc_text: {
-    fontSize: 18,
-    padding: 5,
-    width: 190,
-  },
-  grid_doc_title_text: {
-    fontSize: 14,
-    padding: 2,
-  },
-  fixToText: {
-    flex: 1,
-    paddingTop: 10,
-    flexDirection: "row",
-    justifyContent: "space-between",
-  },
+ 
 });
 export default BookingScreen;

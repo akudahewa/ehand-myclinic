@@ -64,6 +64,7 @@ const styles = (props) =>
     },
     title: {
       color: "#fff",
+      textTransform:'capitalize'
     },
   });
 
