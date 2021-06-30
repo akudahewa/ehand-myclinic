@@ -162,7 +162,7 @@ function SessionScreen({ route, navigation }) {
           setIsLoading(false);
         })
         .catch((error) => {
-          console.log("Error => GET Session :" + JSON.stringify(error));
+          console.log("Error => GET Sessions :" + JSON.stringify(error));
           setIsLoading(false);
           showExceptionAlert(navigation);
         })
@@ -193,11 +193,6 @@ function SessionScreen({ route, navigation }) {
                   )}
                 </PatientContextConsumer>
 
-                {/* <View style={styles.sessions_header_bar}>
-                  <Text style={styles.session_header}>
-                    {appCache.dispensary.dispensaryName} SESSIONS
-                  </Text>
-                </View> */}
                 <View style={styles.scrollContainer}>
                   <ScrollView showsVerticalScrollIndicator={false}>
                     <View style={GlobalStyle.seesion_list}>
