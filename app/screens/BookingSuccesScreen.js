@@ -51,12 +51,12 @@ function BookingSuccessScreen({ route, navigation }) {
                 <Text style={styles.success_message}>Booking Completed !</Text>
               </View>
               <View style={styles.countdown}>
-                <Text style={{ textAlign: "center" }}>
+                <Text style={{ textAlign: "center", color:'#7f7e7e' }}>
                   You will be recevied a sms. please keep remember to show that
                   sms to dispensary{" "}
                 </Text>
               </View>
-              <View elevation={2} style={styles.summary}>
+              <View style={styles.summary}>
                 <View style={styles.key_value_display}>
                   <Text style={styles.key_display}>REFERENCE NO :</Text>
                   <Text style={styles.value_display}>
@@ -202,7 +202,7 @@ const styles = StyleSheet.create({
   success_message: {
     fontSize: 18,
     color: "green",
-    // fontWeight: "bold",
+    fontWeight: "bold",
     //padding: 15,
     textAlign: "center",
     marginTop: 15,
@@ -228,8 +228,10 @@ const styles = StyleSheet.create({
   },
   summary: {
     padding: 10,
-    borderRadius: 3,
+    borderRadius: 5,
     margin: 15,
+    borderColor: "#1896c5",
+    borderWidth: 1
   },
   key_value_display: {
     flexDirection: "row",
@@ -238,11 +240,14 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 14,
     margin: 5,
+    textTransform: 'capitalize',
+    color: '#1896c5'
   },
   value_display: {
     flex: 1,
     fontSize: 15,
     fontWeight: "bold",
+    color: '#1896c5'
   },
   display_small: {
     fontSize: 12,

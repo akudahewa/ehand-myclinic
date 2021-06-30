@@ -58,6 +58,9 @@ const MyBookings = () => {
         setVisible(!visible);
     };
 
+    const currentTime = 5;
+    const sessionTime = 12;
+
     useEffect(() => {
         fetch('https://jsonplaceholder.typicode.com/users')
             .then((response) => response.json())
@@ -69,7 +72,7 @@ const MyBookings = () => {
 
     return (
         <PaperProvider theme={theme}>
-            <Header name="Bookings" showBackArrow={true} />
+            <Header name="Manage Bookings" showBackArrow={true} />
             <View style={{ backgroundColor: "white", flex: 1 }}>
                 {isLoading ? <LoadSpinner loading={isLoading} loadingText="Please wait .." /> : (
                     <ScrollView>
@@ -139,6 +142,7 @@ const MyBookings = () => {
                         titleStyle={{color:'#f43838', fontSize:14,}}
                         buttonStyle={{borderColor:'#f43838'}}
                         onPress={deleteBooking}
+                        disabled={(sessionTime - currentTime)>0 ? true : false}
                     />
                 </View>
 

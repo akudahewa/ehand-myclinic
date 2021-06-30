@@ -37,8 +37,8 @@ export default function MyHeader(props) {
             }}
           />
 
-          <Appbar.Content title={props.name} subtitle="Care close to home" />
-          <Button
+          <Appbar.Content title={props.name} subtitle="Care close to home"  titleStyle={{fontSize:17}} />
+          {props.name==="Manage Bookings" ? null : <Button
             icon="bookmark-multiple-outline"
             color="white"
             labelStyle={{ letterSpacing: 0.5 }}
@@ -47,7 +47,8 @@ export default function MyHeader(props) {
             onPress={() => {navigation.navigate('MyBookings')}}
           >
             My Bookings
-          </Button>
+          </Button>}
+          
         </Appbar>
       ) : (
         <Appbar style={styles.header}>
@@ -56,8 +57,8 @@ export default function MyHeader(props) {
             source={require("../assets/myclinic_logo.jpg")}
           />
 
-          <Appbar.Content title={props.name} subtitle="Care close to home" />
-          <Button
+          <Appbar.Content title={props.name} subtitle="Care close to home"  titleStyle={{fontSize:17}}/>
+          {props.name==="Manage Bookings" ? null : <Button
             icon="bookmark-multiple-outline"
             color="white"
             labelStyle={{ letterSpacing: 0.5 }}
@@ -66,7 +67,8 @@ export default function MyHeader(props) {
             onPress={() => {navigation.navigate('MyBookings')}}
           >
             My Bookings
-          </Button>
+          </Button>}
+          
         </Appbar>
       )}
     </>

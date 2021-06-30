@@ -41,6 +41,7 @@ function BookingScreen({ route, navigation }) {
   const [sessionCache, setSessionCache] = useState({});
   const [patientNameError, setPatientNameError] = useState("");
   const [patientNumberError, setPatientNumberError] = useState("");
+  const [phoneErrorCheck, setphoneErrorCheck] = useState();
 
   const onSubmit = async () => {
     console.log("------------------submit form --------------------");
@@ -213,6 +214,9 @@ function BookingScreen({ route, navigation }) {
                       defaultValue={patientName}
                       onChangeText={(patientName) => {
                         setPatientName(patientName);
+                        if(patientName.length>=5){
+                          setPatientNameError(" ");
+                        }
                       }}
                       errorMessage={patientNameError}
                       inputContainerStyle={{borderBottomColor:'#ddd'}}
@@ -230,6 +234,11 @@ function BookingScreen({ route, navigation }) {
                       defaultValue={patientNumber}
                       onChangeText={(patientNumber) => {
                         setPatientNumber(patientNumber);
+                        // if (validate()) {
+                        //   setPatientNumberError(" ");
+                        // }
+                        
+                        
                       }}
                       placeholder="Patient phone number"
                       errorStyle={{ color: "red" }}
