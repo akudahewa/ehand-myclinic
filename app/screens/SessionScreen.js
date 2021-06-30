@@ -114,7 +114,7 @@ const query = (doctorId, dispensaryId, displayDays) => {
 var deviceHeight = Dimensions.get("window").height;
 
 function SessionScreen({ route, navigation }) {
-  console.log("SessionScreen : component loading ");
+  console.log("SessionScreen : session component loading ");
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [appCache, setAppCache] = useState({});
@@ -162,11 +162,11 @@ function SessionScreen({ route, navigation }) {
           setIsLoading(false);
         })
         .catch((error) => {
-          console.log("Error => GET Session :" + JSON.stringify(error));
+          console.log("Error => GET Sessions :" + JSON.stringify(error));
           setIsLoading(false);
           showExceptionAlert(navigation);
         })
-        .finally(() => { });
+        .finally(() => {});
     });
   }, []);
 
@@ -185,18 +185,14 @@ function SessionScreen({ route, navigation }) {
                     <>
                       <UserProfile user={appCache.doctor} />
                       <ContentTitle
-                        titleText={appCache.dispensary.dispensaryName + " Sessions"}
+                        titleText={
+                          appCache.dispensary.dispensaryName + " Sessions"
+                        }
                       />
-
                     </>
                   )}
                 </PatientContextConsumer>
 
-                {/* <View style={styles.sessions_header_bar}>
-                  <Text style={styles.session_header}>
-                    {appCache.dispensary.dispensaryName} SESSIONS
-                  </Text>
-                </View> */}
                 <View style={styles.scrollContainer}>
                   <ScrollView showsVerticalScrollIndicator={false}>
                     <View style={GlobalStyle.seesion_list}>
@@ -206,13 +202,21 @@ function SessionScreen({ route, navigation }) {
                         renderItem={({ item }) => (
                           <View>
                             <View style={GlobalStyle.same_row}>
-                              <View style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}><Text style={styles.session_data}>
-                                {item.date}
-                              </Text>
+                              <View
+                                style={{
+                                  display: "flex",
+                                  flexDirection: "column",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                }}
+                              >
+                                <Text style={styles.session_data}>
+                                  {item.date}
+                                </Text>
                                 <Text style={GlobalStyle.session_data_time}>
                                   MON / {item.sessionStartTime}
                                 </Text>
-                                </View>
+                              </View>
 
                               <Text style={GlobalStyle.appoinment_box}>
                                 Active {"\n"}Appoinment {"\n"}{" "}
@@ -277,7 +281,7 @@ const styles = StyleSheet.create({
     padding: 10,
     textAlign: "center",
   },
- 
+
   scrollContainer: {
     display: "flex",
     height: deviceHeight - 460,
