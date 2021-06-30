@@ -29,6 +29,7 @@ import { API_TNX, SERVER_HOST } from "../commons/constants";
 import { storeData, retrieveData } from "../service/AppLocalCache";
 import { showExceptionAlert, closeApp } from "../commons/index";
 import GlobalStyle from "../style/style";
+import { getResources } from "../components/ApiClient";
 
 function BookingScreen({ route, navigation }) {
   const [isLoading, setIsLoading] = useState(true);
@@ -41,18 +42,26 @@ function BookingScreen({ route, navigation }) {
   const [sessionCache, setSessionCache] = useState({});
   const [patientNameError, setPatientNameError] = useState("");
   const [patientNumberError, setPatientNumberError] = useState("");
+  const [patientMetaData, setPatientMetaData] = useState({});
   const [phoneErrorCheck, setphoneErrorCheck] = useState();
 
   const onSubmit = async () => {
-    console.log("------------------submit form --------------------");
+    console.log("--------submit form ---------" + JSON.stringify(sessionCache));
+    console.log(
+      "############# patientMeta #################### " +
+        JSON.stringify(patientMetaData)
+    );
     if (validate()) {
       let sessionId = sessionCache.session.sessionId;
       let booking = {
         bookedDate: sessionCache.session.date,
         status: -1,
         mobileNo: patientNumber,
+        patientAppointmentNumber: patientMetaData.patientAppoinmentNumber + 1,
+        patientAppoinmentTime: patientMetaData.patientAppoinmentTime,
+        deviceId: Expo.Constants.deviceId,
       };
-
+      console.log(JSON.stringify(booking));
       fetch(`${SERVER_HOST}/api/${API_TNX}/${sessionId}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -105,6 +114,7 @@ function BookingScreen({ route, navigation }) {
     cacheValues.map((result, i, cacheValue) => {
       key = cacheValue[i][0];
       value = JSON.parse(cacheValue[i][1]);
+      console.log("Extract cache values :" + JSON.stringify(value));
       if (key === "doc_dis_cache") {
         setDoctorDispensaryCache(value);
       } else {
@@ -132,11 +142,34 @@ function BookingScreen({ route, navigation }) {
      * params - doctor,dispensary
      * ex :
      */
-    retrieveData(["doc_dis_cache", "session_cache"]).then((data) => {
-      extractCacheValues(data);
-      setIsLoading(false);
-    });
+    retrieveData(["doc_dis_cache", "session_cache"])
+      .then((data) => {
+        extractCacheValues(data);
+      })
+      .then((cache) => {
+        console.log(
+          ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>.. " + JSON.stringify(sessionCache)
+        );
+        let doctorSessionGridId = sessionCache.session.sessionId;
+        getResources(
+          `${SERVER_HOST}/api/${API_TNX}?doctorSessionGridId=${sessionCache.session.sessionId}`
+        )
+          .then((resources) => resources.json())
+          .then((data) => {
+            setPatientMetaData(data);
+            setIsLoading(false);
+          })
+          .catch((error) => {
+            setIsLoading(false);
+            console.log(
+              "Error occur while getting next appoinment number :" +
+                JSON.stringify(error)
+            );
+          });
+      });
   }, []);
+
+  useEffect(() => {});
 
   return (
     <PaperProvider>
@@ -146,7 +179,7 @@ function BookingScreen({ route, navigation }) {
           {isLoading ? (
             <LoadSpinner loading={isLoading} loadingText="Loading" />
           ) : (
-            <ScrollView keyboardShouldPersistTaps='always'>
+            <ScrollView keyboardShouldPersistTaps="always">
               <View style={{ flex: 1, marginBottom: 30 }}>
                 {keyboardState ? (
                   <>
@@ -159,13 +192,28 @@ function BookingScreen({ route, navigation }) {
                     <View style={styles.sessions_header_bar}>
                       <Text style={styles.session_header}>Session Details</Text>
                     </View>
-                    <View style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                      <Text style={{ color: '#f43838', fontSize:12 }}>*Extra appoinmnets not given by the doctor</Text>
+                    <View
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Text style={{ color: "#f43838", fontSize: 12 }}>
+                        *Extra appoinmnets not given by the doctor
+                      </Text>
                     </View>
 
                     <View style={GlobalStyle.seesion_list}>
                       <View style={GlobalStyle.same_row}>
-                        <View style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                        <View
+                          style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        >
                           <Text style={styles.session_data}>
                             {sessionCache.session.date}
                           </Text>
@@ -175,7 +223,11 @@ function BookingScreen({ route, navigation }) {
                         </View>
 
                         <Text style={GlobalStyle.appoinment_box}>
-                          Active {"\n"}Appoinment {"\n"} 10
+                          Active {"\n"}Appoinment {"\n"}{" "}
+                          {patientMetaData.patientAppoinmentNumber}
+                        </Text>
+                        <Text style={GlobalStyle.appoinment_box}>
+                          {patientMetaData.patientTime}
                         </Text>
                         <View style={styles.countdown_box}>
                           <CountDown
@@ -199,7 +251,13 @@ function BookingScreen({ route, navigation }) {
                   <SafeAreaView>
                     <Picker
                       selectedValue={selectedValue}
-                      style={{ height: 50, width: 120, color: 'gray', marginLeft:2, fontSize:15}}
+                      style={{
+                        height: 50,
+                        width: 120,
+                        color: "gray",
+                        marginLeft: 2,
+                        fontSize: 15,
+                      }}
                       onValueChange={(itemValue, itemIndex) =>
                         setSelectedValue(itemValue)
                       }
@@ -214,13 +272,13 @@ function BookingScreen({ route, navigation }) {
                       defaultValue={patientName}
                       onChangeText={(patientName) => {
                         setPatientName(patientName);
-                        if(patientName.length>=5){
+                        if (patientName.length >= 5) {
                           setPatientNameError(" ");
                         }
                       }}
                       errorMessage={patientNameError}
-                      inputContainerStyle={{borderBottomColor:'#ddd'}}
-                      style={{fontSize:14}}
+                      inputContainerStyle={{ borderBottomColor: "#ddd" }}
+                      style={{ fontSize: 14 }}
                     />
                     <Input
                       style={{
@@ -228,7 +286,7 @@ function BookingScreen({ route, navigation }) {
                         // borderColor: "gray",
                         // borderBottomWidth: 1,
                         placeholderTextColor: "gray",
-                        fontSize:14
+                        fontSize: 14,
                       }}
                       keyboardType="number-pad"
                       defaultValue={patientNumber}
@@ -237,13 +295,11 @@ function BookingScreen({ route, navigation }) {
                         // if (validate()) {
                         //   setPatientNumberError(" ");
                         // }
-                        
-                        
                       }}
                       placeholder="Patient phone number"
                       errorStyle={{ color: "red" }}
                       errorMessage={patientNumberError}
-                      inputContainerStyle={{borderBottomColor:'#ddd'}}
+                      inputContainerStyle={{ borderBottomColor: "#ddd" }}
                     />
                   </SafeAreaView>
                   <TouchableOpacity
@@ -269,7 +325,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "flex-end",
-    backgroundColor: '#fff'
+    backgroundColor: "#fff",
   },
   main_screen: {
     flex: 1,
@@ -292,15 +348,13 @@ const styles = StyleSheet.create({
   },
 
   formView: {
-    paddingHorizontal:15,
-    backgroundColor: 'rgba(24, 150, 197, 0.1)',
+    paddingHorizontal: 15,
+    backgroundColor: "rgba(24, 150, 197, 0.1)",
     flex: 1,
     margin: 15,
     borderRadius: 5,
-    paddingBottom:15
+    paddingBottom: 15,
   },
-
-
 
   sessions_header_bar: {
     marginTop: 10,
@@ -308,10 +362,9 @@ const styles = StyleSheet.create({
   },
   session_header: {
     //padding: 10,
-    textAlign: 'center',
-    fontWeight:'bold'
+    textAlign: "center",
+    fontWeight: "bold",
   },
-
 
   header_text: {
     margin: 25,
@@ -333,6 +386,5 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "white",
   },
-
 });
 export default BookingScreen;
