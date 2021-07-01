@@ -44,7 +44,6 @@ function BookingScreen({ route, navigation }) {
   const [patientNumberError, setPatientNumberError] = useState("");
   const [patientMetaData, setPatientMetaData] = useState({});
   const [phoneErrorCheck, setphoneErrorCheck] = useState();
-  const [patientMetaData, setPatientMetaData] = useState({});
 
   const onSubmit = async () => {
     if (validate()) {

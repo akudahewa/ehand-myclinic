@@ -71,7 +71,7 @@ const renderMyBookings = () => {
 };
 
 function loadBookAction(status) {
-  if (status == "AVAILABLE") {
+  if (status == "ACTIVE") {
     return {
       flex: 1,
       height: 40,
@@ -156,6 +156,7 @@ function SessionScreen({ route, navigation }) {
           console.log("SessionScreen => GET :" + JSON.stringify(resources));
           let sessionList = [];
           resources.forEach((resource) => {
+            resource.date = "2021/07/16";
             sessionList.push(resource);
           });
           setData(sessionList);
