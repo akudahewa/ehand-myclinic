@@ -42,6 +42,7 @@ function BookingScreen({ route, navigation }) {
   const [sessionCache, setSessionCache] = useState({});
   const [patientNameError, setPatientNameError] = useState("");
   const [patientNumberError, setPatientNumberError] = useState("");
+  const [patientMetaData, setPatientMetaData] = useState({});
   const [phoneErrorCheck, setphoneErrorCheck] = useState();
   const [patientMetaData, setPatientMetaData] = useState({});
 
@@ -112,6 +113,7 @@ function BookingScreen({ route, navigation }) {
     cacheValues.map((result, i, cacheValue) => {
       key = cacheValue[i][0];
       value = JSON.parse(cacheValue[i][1]);
+      console.log("Extract cache values :" + JSON.stringify(value));
       if (key === "doc_dis_cache") {
         setDoctorDispensaryCache(value);
       } else {
@@ -237,7 +239,11 @@ function BookingScreen({ route, navigation }) {
                         </View>
 
                         <Text style={GlobalStyle.appoinment_box}>
-                          Active {"\n"}Appoinment {"\n"} 10
+                          Active {"\n"}Appoinment {"\n"}{" "}
+                          {patientMetaData.patientAppoinmentNumber}
+                        </Text>
+                        <Text style={GlobalStyle.appoinment_box}>
+                          {patientMetaData.patientTime}
                         </Text>
                         <View style={styles.countdown_box}>
                           <CountDown
