@@ -44,24 +44,22 @@ function BookingScreen({ route, navigation }) {
   const [patientNumberError, setPatientNumberError] = useState("");
   const [patientMetaData, setPatientMetaData] = useState({});
   const [phoneErrorCheck, setphoneErrorCheck] = useState();
+  const [patientMetaData, setPatientMetaData] = useState({});
 
   const onSubmit = async () => {
-    console.log("--------submit form ---------" + JSON.stringify(sessionCache));
-    console.log(
-      "############# patientMeta #################### " +
-        JSON.stringify(patientMetaData)
-    );
     if (validate()) {
       let sessionId = sessionCache.session.sessionId;
       let booking = {
         bookedDate: sessionCache.session.date,
         status: -1,
         mobileNo: patientNumber,
-        patientAppointmentNumber: patientMetaData.patientAppoinmentNumber + 1,
-        patientAppoinmentTime: patientMetaData.patientAppoinmentTime,
+        patientAppoinmentTime: patientMetaData.patientTime,
+        patientAppointmentNumber: patientMetaData.patientAppoinmentNumber,
+        patient: patientName,
         deviceId: Expo.Constants.deviceId,
       };
       console.log(JSON.stringify(booking));
+
       fetch(`${SERVER_HOST}/api/${API_TNX}/${sessionId}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -83,6 +81,7 @@ function BookingScreen({ route, navigation }) {
   };
 
   const onChangePatientName = (val) => {
+    console.log("name :" + val);
     setPatientName(val);
   };
   useEffect(() => {
@@ -118,6 +117,10 @@ function BookingScreen({ route, navigation }) {
       if (key === "doc_dis_cache") {
         setDoctorDispensaryCache(value);
       } else {
+        console.log(
+          "==================set session cache =========" +
+            JSON.stringify(value)
+        );
         setSessionCache(value);
       }
     });
@@ -142,34 +145,47 @@ function BookingScreen({ route, navigation }) {
      * params - doctor,dispensary
      * ex :
      */
-    retrieveData(["doc_dis_cache", "session_cache"])
-      .then((data) => {
-        extractCacheValues(data);
-      })
-      .then((cache) => {
-        console.log(
-          ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>.. " + JSON.stringify(sessionCache)
-        );
-        let doctorSessionGridId = sessionCache.session.sessionId;
-        getResources(
-          `${SERVER_HOST}/api/${API_TNX}?doctorSessionGridId=${sessionCache.session.sessionId}`
-        )
-          .then((resources) => resources.json())
-          .then((data) => {
-            setPatientMetaData(data);
-            setIsLoading(false);
-          })
-          .catch((error) => {
-            setIsLoading(false);
-            console.log(
-              "Error occur while getting next appoinment number :" +
-                JSON.stringify(error)
-            );
-          });
-      });
+    console.log("useEffects -> Extracting values from cache");
+    retrieveData(["doc_dis_cache", "session_cache"]).then((data) => {
+      extractCacheValues(data);
+      // setIsLoading(false);
+    });
   }, []);
 
-  useEffect(() => {});
+  useEffect(() => {
+    console.log(
+      "useEffects -> Calling api get Booking meta data. sceesionCache :" +
+        JSON.stringify(sessionCache) +
+        " checker :" +
+        sessionCache.hasOwnProperty("session")
+    );
+    if (sessionCache.hasOwnProperty("session")) {
+      let doctorSessionGridId = sessionCache.session.sessionId;
+      console.log("doctorSessionGridId :" + doctorSessionGridId);
+      console.log(
+        `${SERVER_HOST}/api/${API_TNX}?doctorSessionGridId=${sessionCache.session.sessionId}`
+      );
+      getResources(
+        `${API_TNX}?doctorSessionGridId=${sessionCache.session.sessionId}`
+      )
+        // .then((resources) => {
+        //   // console.log(JSON.stringify(resources));
+        //   resources.json();
+        // })
+        .then((data) => {
+          console.log("data -> " + JSON.stringify(data));
+          setPatientMetaData(data);
+          setIsLoading(false);
+        })
+        .catch((error) => {
+          setIsLoading(false);
+          console.log(
+            "Error occur while getting next appoinment number :" +
+              JSON.stringify(error)
+          );
+        });
+    }
+  }, [sessionCache]);
 
   return (
     <PaperProvider>
