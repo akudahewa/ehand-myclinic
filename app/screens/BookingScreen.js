@@ -29,6 +29,7 @@ import { API_TNX, SERVER_HOST } from "../commons/constants";
 import { storeData, retrieveData } from "../service/AppLocalCache";
 import { showExceptionAlert, closeApp } from "../commons/index";
 import GlobalStyle from "../style/style";
+import { getResources } from "../components/ApiClient";
 
 function BookingScreen({ route, navigation }) {
   const [isLoading, setIsLoading] = useState(true);
@@ -42,16 +43,21 @@ function BookingScreen({ route, navigation }) {
   const [patientNameError, setPatientNameError] = useState("");
   const [patientNumberError, setPatientNumberError] = useState("");
   const [phoneErrorCheck, setphoneErrorCheck] = useState();
+  const [patientMetaData, setPatientMetaData] = useState({});
 
   const onSubmit = async () => {
-    console.log("------------------submit form --------------------");
     if (validate()) {
       let sessionId = sessionCache.session.sessionId;
       let booking = {
         bookedDate: sessionCache.session.date,
         status: -1,
         mobileNo: patientNumber,
+        patientAppoinmentTime: patientMetaData.patientTime,
+        patientAppointmentNumber: patientMetaData.patientAppoinmentNumber,
+        patient: patientName,
+        deviceId: Expo.Constants.deviceId,
       };
+      console.log(JSON.stringify(booking));
 
       fetch(`${SERVER_HOST}/api/${API_TNX}/${sessionId}`, {
         method: "POST",
@@ -74,6 +80,7 @@ function BookingScreen({ route, navigation }) {
   };
 
   const onChangePatientName = (val) => {
+    console.log("name :" + val);
     setPatientName(val);
   };
   useEffect(() => {
@@ -108,6 +115,10 @@ function BookingScreen({ route, navigation }) {
       if (key === "doc_dis_cache") {
         setDoctorDispensaryCache(value);
       } else {
+        console.log(
+          "==================set session cache =========" +
+            JSON.stringify(value)
+        );
         setSessionCache(value);
       }
     });
@@ -132,11 +143,47 @@ function BookingScreen({ route, navigation }) {
      * params - doctor,dispensary
      * ex :
      */
+    console.log("useEffects -> Extracting values from cache");
     retrieveData(["doc_dis_cache", "session_cache"]).then((data) => {
       extractCacheValues(data);
-      setIsLoading(false);
+      // setIsLoading(false);
     });
   }, []);
+
+  useEffect(() => {
+    console.log(
+      "useEffects -> Calling api get Booking meta data. sceesionCache :" +
+        JSON.stringify(sessionCache) +
+        " checker :" +
+        sessionCache.hasOwnProperty("session")
+    );
+    if (sessionCache.hasOwnProperty("session")) {
+      let doctorSessionGridId = sessionCache.session.sessionId;
+      console.log("doctorSessionGridId :" + doctorSessionGridId);
+      console.log(
+        `${SERVER_HOST}/api/${API_TNX}?doctorSessionGridId=${sessionCache.session.sessionId}`
+      );
+      getResources(
+        `${API_TNX}?doctorSessionGridId=${sessionCache.session.sessionId}`
+      )
+        // .then((resources) => {
+        //   // console.log(JSON.stringify(resources));
+        //   resources.json();
+        // })
+        .then((data) => {
+          console.log("data -> " + JSON.stringify(data));
+          setPatientMetaData(data);
+          setIsLoading(false);
+        })
+        .catch((error) => {
+          setIsLoading(false);
+          console.log(
+            "Error occur while getting next appoinment number :" +
+              JSON.stringify(error)
+          );
+        });
+    }
+  }, [sessionCache]);
 
   return (
     <PaperProvider>
@@ -146,7 +193,7 @@ function BookingScreen({ route, navigation }) {
           {isLoading ? (
             <LoadSpinner loading={isLoading} loadingText="Loading" />
           ) : (
-            <ScrollView keyboardShouldPersistTaps='always'>
+            <ScrollView keyboardShouldPersistTaps="always">
               <View style={{ flex: 1, marginBottom: 30 }}>
                 {keyboardState ? (
                   <>
@@ -159,13 +206,28 @@ function BookingScreen({ route, navigation }) {
                     <View style={styles.sessions_header_bar}>
                       <Text style={styles.session_header}>Session Details</Text>
                     </View>
-                    <View style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                      <Text style={{ color: '#f43838', fontSize:12 }}>*Extra appoinmnets not given by the doctor</Text>
+                    <View
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Text style={{ color: "#f43838", fontSize: 12 }}>
+                        *Extra appoinmnets not given by the doctor
+                      </Text>
                     </View>
 
                     <View style={GlobalStyle.seesion_list}>
                       <View style={GlobalStyle.same_row}>
-                        <View style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                        <View
+                          style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        >
                           <Text style={styles.session_data}>
                             {sessionCache.session.date}
                           </Text>
@@ -199,7 +261,13 @@ function BookingScreen({ route, navigation }) {
                   <SafeAreaView>
                     <Picker
                       selectedValue={selectedValue}
-                      style={{ height: 50, width: 120, color: 'gray', marginLeft:2, fontSize:15}}
+                      style={{
+                        height: 50,
+                        width: 120,
+                        color: "gray",
+                        marginLeft: 2,
+                        fontSize: 15,
+                      }}
                       onValueChange={(itemValue, itemIndex) =>
                         setSelectedValue(itemValue)
                       }
@@ -214,13 +282,13 @@ function BookingScreen({ route, navigation }) {
                       defaultValue={patientName}
                       onChangeText={(patientName) => {
                         setPatientName(patientName);
-                        if(patientName.length>=5){
+                        if (patientName.length >= 5) {
                           setPatientNameError(" ");
                         }
                       }}
                       errorMessage={patientNameError}
-                      inputContainerStyle={{borderBottomColor:'#ddd'}}
-                      style={{fontSize:14}}
+                      inputContainerStyle={{ borderBottomColor: "#ddd" }}
+                      style={{ fontSize: 14 }}
                     />
                     <Input
                       style={{
@@ -228,7 +296,7 @@ function BookingScreen({ route, navigation }) {
                         // borderColor: "gray",
                         // borderBottomWidth: 1,
                         placeholderTextColor: "gray",
-                        fontSize:14
+                        fontSize: 14,
                       }}
                       keyboardType="number-pad"
                       defaultValue={patientNumber}
@@ -237,13 +305,11 @@ function BookingScreen({ route, navigation }) {
                         // if (validate()) {
                         //   setPatientNumberError(" ");
                         // }
-                        
-                        
                       }}
                       placeholder="Patient phone number"
                       errorStyle={{ color: "red" }}
                       errorMessage={patientNumberError}
-                      inputContainerStyle={{borderBottomColor:'#ddd'}}
+                      inputContainerStyle={{ borderBottomColor: "#ddd" }}
                     />
                   </SafeAreaView>
                   <TouchableOpacity
@@ -269,7 +335,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "flex-end",
-    backgroundColor: '#fff'
+    backgroundColor: "#fff",
   },
   main_screen: {
     flex: 1,
@@ -292,15 +358,13 @@ const styles = StyleSheet.create({
   },
 
   formView: {
-    paddingHorizontal:15,
-    backgroundColor: 'rgba(24, 150, 197, 0.1)',
+    paddingHorizontal: 15,
+    backgroundColor: "rgba(24, 150, 197, 0.1)",
     flex: 1,
     margin: 15,
     borderRadius: 5,
-    paddingBottom:15
+    paddingBottom: 15,
   },
-
-
 
   sessions_header_bar: {
     marginTop: 10,
@@ -308,10 +372,9 @@ const styles = StyleSheet.create({
   },
   session_header: {
     //padding: 10,
-    textAlign: 'center',
-    fontWeight:'bold'
+    textAlign: "center",
+    fontWeight: "bold",
   },
-
 
   header_text: {
     margin: 25,
@@ -333,6 +396,5 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "white",
   },
-
 });
 export default BookingScreen;
