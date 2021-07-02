@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import { DefaultTheme, Provider as PaperProvider } from "react-native-paper";
 import Header from "../components/Header";
-import { Avatar, ListItem, Button, Overlay } from "react-native-elements";
+import { Avatar, ListItem, Button, Overlay, SearchBar } from "react-native-elements";
 import LoadSpinner from "../components/SpinnerComponent";
 import ListItemSeparator from "../components/ListItemSeparator";
 import { SERVER_HOST, SCREEN_CHANNEL } from "../commons/constants";
@@ -51,16 +51,16 @@ const MyBookings = () => {
         bDate: "",
         btime: "",
         bNumber: "",
-        docName:"",
-        hospitalName:"",
-        phoneNumber:""
+        docName: "",
+        hospitalName: "",
+        phoneNumber: ""
 
     });
     const [visible, setVisible] = useState(false);
     const toggleOverlay = () => {
         setVisible(!visible);
     };
-
+    const [searchRefNo, setsearchRefNo] = useState("");
     const currentTime = 5;
     const sessionTime = 12;
 
@@ -88,11 +88,22 @@ const MyBookings = () => {
             .finally(() => { });
     }, [])
 
+    const updateSearch = (search) => {
+        setsearchRefNo(search);
+    };
 
     return (
         <PaperProvider theme={theme}>
             <Header name="Manage Bookings" showBackArrow={true} />
             <View style={{ backgroundColor: "white", flex: 1 }}>
+                <View>
+                    <SearchBar
+                        placeholder="Search by ref#..."
+                        onChangeText={updateSearch}
+                        value={searchRefNo}
+                        lightTheme
+                    />
+                </View>
                 {isLoading ? <LoadSpinner loading={isLoading} loadingText="Please wait .." /> : (
                     <ScrollView>
                         {bookingData.map((bookings, i) => (
@@ -105,18 +116,20 @@ const MyBookings = () => {
                                         bDate: bookings.bookedDate,
                                         btime: bookings.patientAppoinmentTime,
                                         bNumber: bookings.patientAppointmentNumber,
-                                        docName:bookings.doctorScheduleGrid.doctorDispensary.doctor.name,
-                                        hospitalName:bookings.doctorScheduleGrid.doctorDispensary.dispensary.name,
-                                        phoneNumber:bookings.mobileNo,
+                                        docName: bookings.doctorScheduleGrid.doctorDispensary.doctor.name,
+                                        hospitalName: bookings.doctorScheduleGrid.doctorDispensary.dispensary.name,
+                                        phoneNumber: bookings.mobileNo,
                                     })
                                 }}
                             >
-                                <ListItem bottomDivider>
+                                <ListItem
+                                    bottomDivider
+                                >
                                     <ListItem.Content>
                                         <ListItem.Title style={GlobalStyle.listTitle}>{bookings.patient}</ListItem.Title>
                                         <ListItem.Subtitle>
-                                            <Text>Ref# - </Text><Text style={{fontWeight:'bold'}}>{bookings.refNumber}   /   </Text>
-                                            <Text>Date - </Text><Text style={{fontWeight:'bold'}}>{bookings.bookedDate}</Text>
+                                            <Text>Ref# - </Text><Text style={{ fontWeight: 'bold' }}>{bookings.refNumber}   /   </Text>
+                                            <Text>Date - </Text><Text style={{ fontWeight: 'bold' }}>{bookings.bookedDate}</Text>
                                         </ListItem.Subtitle>
                                     </ListItem.Content>
                                     <ListItem.Chevron />
@@ -138,9 +151,9 @@ const MyBookings = () => {
                     <Text style={styles.roeDetail}>{singleBooking.pName}</Text>
                 </View>
 
-                
 
-                
+
+
 
                 <View style={styles.singleRow}>
                     <Text style={styles.rowHeading}>Phone</Text>
@@ -211,13 +224,13 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         marginVertical: 8
     },
-    mainHeading:{
-        backgroundColor:'#4573a2',
-        padding:10,
-        color:'#fff',
-        fontWeight:'bold',
-        borderRadius:4,
-        marginVertical:5
+    mainHeading: {
+        backgroundColor: '#4573a2',
+        padding: 10,
+        color: '#fff',
+        fontWeight: 'bold',
+        borderRadius: 4,
+        marginVertical: 5
     },
     rowHeading: {
         minWidth: 80,
@@ -238,8 +251,8 @@ const styles = StyleSheet.create({
     },
     alignSelf: {
         alignSelf: 'center',
-        marginVertical:10,
-        width:100
+        marginVertical: 10,
+        width: 100
     }
 });
 
