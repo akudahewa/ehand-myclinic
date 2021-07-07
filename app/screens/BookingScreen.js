@@ -42,7 +42,6 @@ function BookingScreen({ route, navigation }) {
   const [sessionCache, setSessionCache] = useState({});
   const [patientNameError, setPatientNameError] = useState("");
   const [patientNumberError, setPatientNumberError] = useState("");
-  const [patientMetaData, setPatientMetaData] = useState({});
   const [phoneErrorCheck, setphoneErrorCheck] = useState();
   const [patientMetaData, setPatientMetaData] = useState({});
 
