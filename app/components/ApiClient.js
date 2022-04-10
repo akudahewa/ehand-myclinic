@@ -7,15 +7,20 @@ const request = (options) => {
   });
   const defaults = { headers: headers };
   options = Object.assign({}, defaults, options);
-  return fetch(options.url, options).then((response) =>
-    response.json().then((json) => {
-      console.log("ApiClinet-> API response :" + JSON.stringify(response));
-      if (!response.ok) {
-        return Promise.reject(json);
-      }
-      return json;
-    })
-  );
+  return fetch(options.url, options)
+    .then((response) =>
+      response.json().then((json) => {
+        console.log("ApiClinet-> API response :" + JSON.stringify(response));
+        if (!response.ok) {
+          console.log("error ...." + json);
+          return Promise.reject(json);
+        }
+        return json;
+      })
+    )
+    .catch((error) => {
+      return Promise.reject(json);
+    });
 };
 
 export function getResources(path) {

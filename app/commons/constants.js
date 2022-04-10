@@ -1,5 +1,5 @@
 export const API_DISTRICT_URL = "district";
-export const API_CITY_URL = "city;";
+export const API_CITY_URL = "city";
 export const API_DOCTOR_DISPENSARY_URL = "doctor-dispensary";
 export const API_SCHEDULE = "schedule";
 export const API_TNX = "transaction";

@@ -23,6 +23,7 @@ import {
   API_CITY_URL,
   APP_HEADER_TEXT,
   SCREEN_DOC_DISPENSARY,
+  LOADING_TEXT,
 } from "../commons/constants";
 import { getResources } from "../components/ApiClient";
 import GlobalStyle from "../style/style";
@@ -51,12 +52,14 @@ function CityScreen({ route, navigation }) {
   };
 
   useEffect(() => {
+    console.log("CityScreen : useEffect -> fetch API records");
     getResources(`${API_DISTRICT_URL}/${district.id}/${API_CITY_URL}`)
       .then((resources) => {
         setCities(toCityArray(resources));
         setIsLoading(false);
       })
       .catch((error) => {
+        console.log("Error => GET cities :" + JSON.stringify(error));
         setIsLoading(false);
         showExceptionAlert(navigation);
       })
@@ -67,15 +70,13 @@ function CityScreen({ route, navigation }) {
     <PaperProvider theme={theme}>
       <Header showBackArrow name={APP_HEADER_TEXT} />
       <View style={GlobalStyle.main_container}>
-        {/* {<RenderStatusBar />} */}
         {isLoading ? (
-          <LoadSpinner loading={isLoading} loadingText="Please wait ..." />
+          <LoadSpinner loading={isLoading} loadingText={LOADING_TEXT} />
         ) : (
           <View style={GlobalStyle.body_container}>
             <View>
               <Text style={styles.sub_title}>District : {district.name}</Text>
               <Text style={GlobalStyle.title}>Select your city</Text>
-              
             </View>
 
             <ScrollView>
@@ -93,10 +94,11 @@ function CityScreen({ route, navigation }) {
                       style={[GlobalStyle.item]}
                     >
                       <Icon
-                            name='location'
-                            type='evilicon'
-                            color='#4573a2'
-                            size={20} />
+                        name="location"
+                        type="evilicon"
+                        color="#4573a2"
+                        size={20}
+                      />
                       <Text style={GlobalStyle.item_text}>{item.name}</Text>
                     </TouchableOpacity>
                   )}
@@ -118,10 +120,9 @@ const styles = StyleSheet.create({
     color: "#50a584",
     fontWeight: "bold",
     textAlign: "center",
-    marginTop:15,
-    textTransform:'capitalize'
+    marginTop: 15,
+    textTransform: "capitalize",
   },
-  
 });
 
 export default CityScreen;

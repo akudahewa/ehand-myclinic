@@ -35,7 +35,7 @@ export const showExceptionAlert = (nav) => {
 };
 
 export const closeApp = (navigation) => {
-  alert("xxxxxxx :" + navigation);
+  alert("close event is fired :" + navigation);
   if (navigation.isFocused()) {
     navigation.dispatch(
       CommonActions.reset({

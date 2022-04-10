@@ -45,38 +45,11 @@ class PatientContextProvider extends Component {
       console.log(tmp);
       console.log(".............end tmp ..........");
       return tmp;
-      // if(selectedModel.doctorId ==undefined){
-      //   console.log("---------doctorId is undefined -----")
-      //   console.log("ppppppppp :"+this.state.doctorId)
-      // }
-      // return {
-      //   doctor: {
-      //     id: selectedModel.doctorId != undefined ? selectedModel.doctorId : prevState.doctorId,
-      //     name: selectedModel.doctorName != undefined ? selectedModel.doctorName : prevState.doctorName,
-      //     photo: selectedModel.profile_pic != undefined ? selectedModel.profile_pic :prevState.profile_pic,
-      //     speciality: selectedModel.speciality != undefined ? selectedModel.speciality : prevState.speciality,
-      //   },
-      //   dispensary: {
-      //     id: selectedModel.dispensaryId != undefined ? selectedModel.dispensaryId : prevState.dispensaryId,
-      //     name: selectedModel.dispensaryName != undefined ? selectedModel.dispensaryName : prevState.dispensaryName,
-      //   },
-      //   session: {
-      //     id: selectedModel.sessionId != undefined ? selectedModel.sessionId : prevState.sessionId,
-      //     date: selectedModel.date != undefined ? selectedModel.date :prevState.date,
-      //     time: selectedModel.session != undefined ? selectedModel.session : prevState.session,
-      //   },
-      // };
     });
-    // console.log("nnnnnnnnnnnnnnnnnnnn")
-    // console.log(this.state);
-    // console.log("nnnnnnnnnnnnnnnnnnnnnnn")
   };
 
   render() {
     return (
-      //   <Provider
-      //     value={{ name: this.state.name, updatePatient: this.updateContext }}
-      //   >
       <Provider
         value={{
           state: this.state,

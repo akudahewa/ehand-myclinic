@@ -17,6 +17,7 @@ import { showExceptionAlert } from "../utils/Utility";
 import {
   APP_HEADER_TEXT,
   API_DOCTOR_DISPENSARY_URL,
+  LOADING_TEXT,
 } from "../commons/constants";
 import { getResources } from "../components/ApiClient";
 
@@ -51,8 +52,6 @@ function DoctorDispensaryScreen({ route, navigation }) {
         return null;
     }
   };
-
-
 
   const pushToDoctor = (tmpArray, resource) => {
     let doctorExsist = tmpArray.filter(
@@ -99,7 +98,7 @@ function DoctorDispensaryScreen({ route, navigation }) {
         showExceptionAlert(navigation);
         return true;
       })
-      .finally(() => { });
+      .finally(() => {});
   }, []);
 
   return (
@@ -108,7 +107,7 @@ function DoctorDispensaryScreen({ route, navigation }) {
       <View style={styles.main_container}>
         {/* {<RenderStatusBar />} */}
         {isLoading ? (
-          <LoadSpinner loading={isLoading} loadingText="Please wait ..." />
+          <LoadSpinner loading={isLoading} loadingText={LOADING_TEXT} />
         ) : (
           <View style={styles.content_container}>
             <TabView
@@ -122,12 +121,15 @@ function DoctorDispensaryScreen({ route, navigation }) {
                 <TabBar
                   {...props}
                   style={{ backgroundColor: "#e6e6e6" }}
-                  indicatorStyle={{ backgroundColor: '#43b366', position:'absolute', top:0, height:50 }}
-                  //old color - #719ac4
-                  activeColor='#fff'
-                  inactiveColor='#8b8a8a'
+                  indicatorStyle={{
+                    backgroundColor: "#43b366",
+                    position: "absolute",
+                    top: 0,
+                    height: 50,
+                  }}
+                  activeColor="#fff"
+                  inactiveColor="#8b8a8a"
                 />
-                
               )}
             />
           </View>
