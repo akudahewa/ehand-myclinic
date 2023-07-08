@@ -12,7 +12,7 @@ import Footer from "../components/Footer";
 import { TabView, TabBar } from "react-native-tab-view";
 import DoctorList from "../components/DoctorListComponent";
 import DispensaryList from "../components/DispensaryListComponent";
-import GlobalStyle from "../style/style";
+import {GlobalStyle} from "../style/style";
 import { showExceptionAlert } from "../utils/Utility";
 import {
   APP_HEADER_TEXT,
@@ -25,7 +25,9 @@ function DoctorDispensaryScreen({ route, navigation }) {
   const [doctors, setDoctors] = useState([]);
   const [dispensaries, setDispensaries] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [index, setIndex] = React.useState(0);
+  // const [index, setIndex] = React.useState(0);
+  const [index, setIndex] = useState(0);
+    const [routes] = useState(initialTabs);
 
   const theme = {
     ...DefaultTheme,
@@ -36,108 +38,168 @@ function DoctorDispensaryScreen({ route, navigation }) {
     },
   };
 
-  const [routes] = React.useState([
-    { key: "doctor", title: "Find By Doctor" },
-    { key: "dispensary", title: "Find By Clinic" },
-  ]);
-
-  const renderScene = ({ route }) => {
-    switch (route.key) {
-      case "doctor":
-        return <DoctorList doctors={doctors} navi={navigation} />;
-      case "dispensary":
-        return <DispensaryList dispensaries={dispensaries} navi={navigation} />;
-      default:
-        return null;
-    }
-  };
-
-
-
-  const pushToDoctor = (tmpArray, resource) => {
-    let doctorExsist = tmpArray.filter(
-      (doctor) => doctor.doctorId === resource.doctor.doctorId
+  const initialTabs = [
+    { key: "tab1", title: "Tab 1" },
+    { key: "tab2", title: "Tab 2" },
+    { key: "tab3", title: "Tab 3" },
+  ];
+  
+  // const TabViewExample = () => {
+  //   const [index, setIndex] = useState(0);
+  //   const [routes] = useState(initialTabs);
+  
+    const renderScene = ({ route }) => {
+      switch (route.key) {
+        case "tab1":
+          return <View style={styles.sceneContainer}><Text>Tab 1 Content</Text></View>;
+        case "tab2":
+          return <View style={styles.sceneContainer}><Text>Tab 2 Content</Text></View>;
+        case "tab3":
+          return <View style={styles.sceneContainer}><Text>Tab 3 Content</Text></View>;
+        default:
+          return null;
+      }
+    };
+  
+    const renderTabBar = (props) => (
+      <TabBar
+        {...props}
+        indicatorStyle={styles.indicator}
+        style={styles.tabBar}
+        tabStyle={styles.tab}
+        labelStyle={styles.label}
+      />
     );
-    return doctorExsist;
-  };
 
-  const pushToDispensary = (tmpDispensaries, resource) => {
-    let dispensaryExsist = tmpDispensaries.filter(
-      (dispensary) =>
-        dispensary.dispensaryId === resource.dispensary.dispensaryId
-    );
-    return dispensaryExsist;
-  };
+  // const [routes] = React.useState([
+  //   { key: "doctor", title: "Find By Doctor" },
+  //   { key: "dispensary", title: "Find By Clinic" },
+  // ]);
 
-  useEffect(() => {
-    console.log("DoctorDispensaryScreen : useEffect -> fetch API records");
-    getResources(`${API_DOCTOR_DISPENSARY_URL}/${cityId}`)
-      .then((resources) => {
-        console.log(
-          "DoctorDispensaryScreen => GET :" + JSON.stringify(resources)
-        );
-        let tmpDoctor = [];
-        let tmpDispensaries = [];
+  // const renderScene = ({ route }) => {
+  //   switch (route.key) {
+  //     case "doctor":
+  //       return <DoctorList doctors={doctors} navi={navigation} />;
+  //     case "dispensary":
+  //       return <DispensaryList dispensaries={dispensaries} navi={navigation} />;
+  //     default:
+  //       return null;
+  //   }
+  // };
 
-        resources.forEach((resource) => {
-          if (pushToDoctor(tmpDoctor, resource) == 0) {
-            tmpDoctor.push(resource.doctor);
-          }
-          if (pushToDispensary(tmpDispensaries, resource) == 0) {
-            tmpDispensaries.push(resource.dispensary);
-          }
-        });
-        setDoctors(tmpDoctor);
-        setDispensaries(tmpDispensaries);
-        setIsLoading(false);
-      })
-      .catch((error) => {
-        console.log(
-          "Error => GET DoctorDispensaries :" + JSON.stringify(error)
-        );
-        setIsLoading(false);
-        showExceptionAlert(navigation);
-        return true;
-      })
-      .finally(() => { });
-  }, []);
+
+
+  // const pushToDoctor = (tmpArray, resource) => {
+  //   let doctorExsist = tmpArray.filter(
+  //     (doctor) => doctor.doctorId === resource.doctor.doctorId
+  //   );
+  //   return doctorExsist;
+  // };
+
+  // const pushToDispensary = (tmpDispensaries, resource) => {
+  //   let dispensaryExsist = tmpDispensaries.filter(
+  //     (dispensary) =>
+  //       dispensary.dispensaryId === resource.dispensary.dispensaryId
+  //   );
+  //   return dispensaryExsist;
+  // };
+
+  // useEffect(() => {
+  //   console.log("DoctorDispensaryScreen : useEffect -> fetch API records");
+  //   getResources(`${API_DOCTOR_DISPENSARY_URL}/${cityId}`)
+  //     .then((resources) => {
+  //       console.log(
+  //         "DoctorDispensaryScreen => GET :" + JSON.stringify(resources)
+  //       );
+  //       let tmpDoctor = [];
+  //       let tmpDispensaries = [];
+
+  //       resources.forEach((resource) => {
+  //         if (pushToDoctor(tmpDoctor, resource) == 0) {
+  //           tmpDoctor.push(resource.doctor);
+  //         }
+  //         if (pushToDispensary(tmpDispensaries, resource) == 0) {
+  //           tmpDispensaries.push(resource.dispensary);
+  //         }
+  //       });
+  //       setDoctors(tmpDoctor);
+  //       setDispensaries(tmpDispensaries);
+  //       setIsLoading(false);
+  //     })
+  //     .catch((error) => {
+  //       alert(error);
+  //       console.log(
+  //         "Error => GET DoctorDispensaries :" + JSON.stringify(error)
+  //       );
+  //       setIsLoading(false);
+  //       showExceptionAlert(navigation);
+  //       return true;
+  //     })
+  //     .finally(() => { });
+  // }, []);
 
   return (
-    <PaperProvider theme={theme}>
-      <Header showBackArrow name={APP_HEADER_TEXT} />
-      <View style={styles.main_container}>
-        {/* {<RenderStatusBar />} */}
-        {isLoading ? (
-          <LoadSpinner loading={isLoading} loadingText="Please wait ..." />
-        ) : (
-          <View style={styles.content_container}>
-            <TabView
-              navigationState={{ index, routes }}
-              renderScene={renderScene}
-              onIndexChange={setIndex}
-              initialLayout={{
-                width: Dimensions.get("window").width,
-              }}
-              renderTabBar={(props) => (
-                <TabBar
-                  {...props}
-                  style={{ backgroundColor: "#e6e6e6" }}
-                  indicatorStyle={{ backgroundColor: '#43b366', position:'absolute', top:0, height:50 }}
-                  //old color - #719ac4
-                  activeColor='#fff'
-                  inactiveColor='#8b8a8a'
-                />
+    <TabView
+      navigationState={{ index, routes }}
+      renderScene={renderScene}
+      renderTabBar={renderTabBar}
+      onIndexChange={setIndex}
+      initialLayout={Dimensions.get("window")}
+    />
+    // <PaperProvider theme={theme}>
+    //   <Header showBackArrow name={APP_HEADER_TEXT} />
+    //   <View style={styles.main_container}>
+    //     {/* {<RenderStatusBar />} */}
+    //     {isLoading ? (
+    //       <LoadSpinner loading={isLoading} loadingText="Please wait ..." />
+    //     ) : (
+    //       <View style={styles.content_container}>
+    //         <TabView
+    //           navigationState={{ index, routes }}
+    //           renderScene={renderScene}
+    //           onIndexChange={setIndex}
+    //           initialLayout={{
+    //             width: Dimensions.get("window").width,
+    //           }}
+    //           renderTabBar={(props) => (
+    //             <TabBar
+    //               {...props}
+    //               style={{ backgroundColor: "#e6e6e6" }}
+    //               indicatorStyle={{ backgroundColor: '#43b366', position:'absolute', top:0, height:50 }}
+    //               //old color - #719ac4
+    //               activeColor='#fff'
+    //               inactiveColor='#8b8a8a'
+    //             />
                 
-              )}
-            />
-          </View>
-        )}
-      </View>
-    </PaperProvider>
+    //           )}
+    //         />
+    //       </View>
+    //     )}
+    //   </View>
+    // </PaperProvider>
   );
 }
 
 const styles = StyleSheet.create({
+  sceneContainer: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  tabBar: {
+    backgroundColor: "#f2f2f2",
+  },
+  tab: {
+    width: "auto",
+  },
+  indicator: {
+    backgroundColor: "blue",
+  },
+  label: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "black",
+  },
   main_container: {
     flex: 1,
     justifyContent: "center",

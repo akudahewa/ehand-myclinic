@@ -2,7 +2,7 @@ import React from "react";
 import { StyleSheet, Text, View, Image } from "react-native";
 import { Avatar } from "react-native-elements";
 import { SERVER_HOST } from "../commons/constants";
-import GlobalStyle from "../style/style";
+import {GlobalStyle} from "../style/style";
 
 const UserProfile = (props) => {
   return (

@@ -25,7 +25,7 @@ import {
   SCREEN_DOC_DISPENSARY,
 } from "../commons/constants";
 import { getResources } from "../components/ApiClient";
-import GlobalStyle from "../style/style";
+import {GlobalStyle} from "../style/style";
 
 function CityScreen({ route, navigation }) {
   const district = route.params.district;

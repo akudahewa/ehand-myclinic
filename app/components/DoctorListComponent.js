@@ -15,7 +15,7 @@ import { Avatar } from "react-native-elements";
 import { ListItem } from "react-native-elements";
 import ListItemSeparator from "../components/ListItemSeparator";
 import { SERVER_HOST, SCREEN_CHANNEL } from "../commons/constants";
-import GlobalStyle from "../style/style";
+import {GlobalStyle} from "../style/style";
 
 const DoctorList = (props) => {
   let cityId = 1;

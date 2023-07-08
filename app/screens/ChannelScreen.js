@@ -22,7 +22,7 @@ import { getResources } from "../components/ApiClient";
 import { API_DOCTOR_DISPENSARY_URL, SERVER_HOST } from "../commons/constants";
 import { storeData } from "../service/AppLocalCache";
 import UserProfile from "../components/UserProfile";
-import GlobalStyle from "../style/style";
+import {GlobalStyle} from "../style/style";
 
 const Item = ({ title }) => (
   <View style={styles.item}>

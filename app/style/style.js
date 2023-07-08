@@ -3,7 +3,8 @@ import { StyleSheet, Dimensions } from "react-native";
 
 const windowWidth = Dimensions.get('window').width;
 
-module.exports = StyleSheet.create({
+export const GlobalStyle = StyleSheet.create({
+// module.exports = StyleSheet.create({
   main_container: {
     flex: 1,
     alignItems: "center",

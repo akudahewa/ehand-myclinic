@@ -26,7 +26,7 @@ import {
   SELECT_DISTRICT,
   SCREEN_CITY,
 } from "../commons/constants";
-import GlobalStyle from "../style/style";
+import {GlobalStyle} from "../style/style";
 import CityScreen from "./CityScreen";
 
 function DistrictScreen({ navigation }) {

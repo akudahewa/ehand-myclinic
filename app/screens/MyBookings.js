@@ -14,7 +14,7 @@ import { Avatar, ListItem, Button, Overlay } from "react-native-elements";
 import LoadSpinner from "../components/SpinnerComponent";
 import ListItemSeparator from "../components/ListItemSeparator";
 import { SERVER_HOST, SCREEN_CHANNEL } from "../commons/constants";
-import GlobalStyle from "../style/style";
+import {GlobalStyle} from "../style/style";
 
 const windowWidth = Dimensions.get('window').width;
 

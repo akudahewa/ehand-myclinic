@@ -24,7 +24,7 @@ import { showExceptionAlert, closeApp } from "../commons/index";
 import { API_SCHEDULE, CACHE_DOC_DIS } from "../commons/constants";
 import { retrieveData } from "../service/AppLocalCache";
 import { storeData } from "../service/AppLocalCache";
-import GlobalStyle from "../style/style";
+import {GlobalStyle} from "../style/style";
 
 function RenderSeparator() {
   return (

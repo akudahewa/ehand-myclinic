@@ -28,7 +28,7 @@ import { PatientContextConsumer } from "../provider/PatientProvider";
 import { API_TNX, SERVER_HOST } from "../commons/constants";
 import { storeData, retrieveData } from "../service/AppLocalCache";
 import { showExceptionAlert, closeApp } from "../commons/index";
-import GlobalStyle from "../style/style";
+import {GlobalStyle} from "../style/style";
 import { getResources } from "../components/ApiClient";
 
 function BookingScreen({ route, navigation }) {
